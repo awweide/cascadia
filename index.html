@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Cascadia (Solo Hex)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Mini Cascadia (Solo Hex)</h1>
+      <p class="subtitle">Open-ended hex board, rotatable split tiles, and end-game largest-group scoring.</p>
+
+      <section class="top-panel">
+        <div>
+          <h2>Mode: <span id="mode-label">Full (20 turns)</span></h2>
+          <p>Turn: <span id="turn-counter">1 / 20</span></p>
+          <p>Phase: <span id="phase-label">Pick a pair</span></p>
+          <p>Final Score: <span id="final-score">-</span></p>
+        </div>
+        <div class="controls">
+          <button id="rotate-left-btn" type="button">Rotate ⟲</button>
+          <button id="rotate-right-btn" type="button">Rotate ⟳</button>
+          <button id="mode-full-btn" type="button">Full 20</button>
+          <button id="mode-fast-btn" type="button">Fast 6</button>
+          <button id="restart-btn" type="button">Restart</button>
+        </div>
+      </section>
+
+      <section class="market" aria-label="Pair Market">
+        <h2>Pair Market</h2>
+        <p>Select one pair. Place the tile first (rotate if needed), then place its token.</p>
+        <div id="market-tiles" class="market-tiles"></div>
+      </section>
+
+      <section class="board-section">
+        <h2>Open-Ended Hex Board</h2>
+        <div id="board" class="hex-board" aria-label="Hex board"></div>
+      </section>
+
+      <p id="status" class="status" aria-live="polite">Choose a pair to begin.</p>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
