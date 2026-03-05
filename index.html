@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Cascadia (Solo)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Mini Cascadia (Solo)</h1>
+      <p class="subtitle">Draft one tile pair each turn and chase the highest score in 20 turns.</p>
+
+      <section class="top-panel">
+        <div>
+          <h2>Score: <span id="score">0</span></h2>
+          <p>Turn: <span id="turn-counter">1 / 20</span></p>
+        </div>
+        <button id="restart-btn" type="button">Restart Game</button>
+      </section>
+
+      <section class="market" aria-label="Tile Market">
+        <h2>Tile + Token Market</h2>
+        <p>Select one pair, then click an empty board cell to place it.</p>
+        <div id="market-tiles" class="market-tiles"></div>
+      </section>
+
+      <section class="boards">
+        <article>
+          <h2>Your Board</h2>
+          <div id="board" class="board" role="grid" aria-label="Player board"></div>
+        </article>
+      </section>
+
+      <section class="rules">
+        <h2>Solo Rules</h2>
+        <ul>
+          <li>Game length: 20 turns.</li>
+          <li>Each turn, choose one market tile+token pair and place it on an empty cell.</li>
+          <li>Score +1 for every orthogonally adjacent matching terrain.</li>
+          <li>Score +1 for every orthogonally adjacent matching wildlife icon.</li>
+          <li>After you place, one random remaining pair is discarded, then market refills back to 4.</li>
+        </ul>
+      </section>
+
+      <p id="status" class="status" aria-live="polite">Choose a tile pair to begin.</p>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
