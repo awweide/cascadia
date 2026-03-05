@@ -3,47 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini Cascadia (Solo)</title>
+    <title>Mini Cascadia (Solo Hex)</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
-      <h1>Mini Cascadia (Solo)</h1>
-      <p class="subtitle">Draft one tile pair each turn and chase the highest score in 20 turns.</p>
+      <h1>Mini Cascadia (Solo Hex)</h1>
+      <p class="subtitle">Open-ended hex board, tile-then-token turns, and end-game largest-group scoring.</p>
 
       <section class="top-panel">
         <div>
-          <h2>Score: <span id="score">0</span></h2>
+          <h2>Mode: <span id="mode-label">Full (20 turns)</span></h2>
           <p>Turn: <span id="turn-counter">1 / 20</span></p>
+          <p>Phase: <span id="phase-label">Pick a pair</span></p>
         </div>
-        <button id="restart-btn" type="button">Restart Game</button>
+        <div class="controls">
+          <button id="mode-full-btn" type="button">Full 20</button>
+          <button id="mode-fast-btn" type="button">Fast 6</button>
+          <button id="restart-btn" type="button">Restart</button>
+        </div>
       </section>
 
-      <section class="market" aria-label="Tile Market">
-        <h2>Tile + Token Market</h2>
-        <p>Select one pair, then click an empty board cell to place it.</p>
+      <section class="market" aria-label="Pair Market">
+        <h2>Pair Market</h2>
+        <p>Select one pair. Place the tile first, then place its token on any legal tile.</p>
         <div id="market-tiles" class="market-tiles"></div>
       </section>
 
-      <section class="boards">
-        <article>
-          <h2>Your Board</h2>
-          <div id="board" class="board" role="grid" aria-label="Player board"></div>
-        </article>
+      <section class="board-section">
+        <h2>Open-Ended Hex Board</h2>
+        <div id="board" class="hex-board" aria-label="Hex board"></div>
       </section>
 
       <section class="rules">
-        <h2>Solo Rules</h2>
+        <h2>Rules in this Version</h2>
         <ul>
-          <li>Game length: 20 turns.</li>
-          <li>Each turn, choose one market tile+token pair and place it on an empty cell.</li>
-          <li>Score +1 for every orthogonally adjacent matching terrain.</li>
-          <li>Score +1 for every orthogonally adjacent matching wildlife icon.</li>
-          <li>After you place, one random remaining pair is discarded, then market refills back to 4.</li>
+          <li>Starter setup: a pre-placed 3-hex triangle is on the board.</li>
+          <li>Tiles can only be placed on open hexes adjacent to existing tiles.</li>
+          <li>Each tile has two printed animals; only those tokens may be placed there.</li>
+          <li>If your picked token has no legal placement anywhere, it is discarded.</li>
+          <li>After every turn, one random remaining market pair is discarded, then market refills to 4.</li>
+          <li>Scoring is only at game end: for each terrain and each animal, score the size of your single largest connected group.</li>
         </ul>
       </section>
 
-      <p id="status" class="status" aria-live="polite">Choose a tile pair to begin.</p>
+      <p id="status" class="status" aria-live="polite">Choose a pair to begin.</p>
     </main>
 
     <script src="script.js"></script>
