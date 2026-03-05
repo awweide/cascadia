@@ -1,0 +1,104 @@
+:root {
+  --bg: #f4f7f1;
+  --card: #fff;
+  --text: #223;
+  --accent: #2f7a5f;
+  --selected: #ffd166;
+  --hex-size: 54;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+h1, h2 { margin: 0.4rem 0; }
+.subtitle { margin-top: 0; }
+
+.top-panel,
+.market,
+.board-section,
+.rules {
+  margin-top: 1rem;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 8%);
+}
+
+.top-panel { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.controls { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+button {
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+}
+
+.market-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.7rem;
+}
+
+.pair {
+  border: 2px solid #d6d9de;
+  border-radius: 10px;
+  padding: 0.6rem;
+  background: #fafafa;
+  text-align: left;
+}
+
+.pair.selected { border-color: var(--selected); box-shadow: 0 0 0 2px rgb(255 209 102 / 50%); }
+.pair-row { margin-top: 0.3rem; font-size: 0.95rem; }
+
+.hex-board {
+  position: relative;
+  min-height: 420px;
+  overflow: auto;
+  border: 1px dashed #b8bec8;
+  border-radius: 10px;
+  background: #fbfcfd;
+}
+
+.hex {
+  --size: calc(var(--hex-size) * 1px);
+  position: absolute;
+  width: calc(var(--size) * 1.73);
+  height: calc(var(--size) * 2);
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  border: 1px solid #7f8a99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.hex.open {
+  background: #eef2f5;
+  border-style: dashed;
+}
+
+.hex.filled { color: #142; font-weight: 600; }
+.hex.starter { outline: 2px solid #5d8fbf; }
+
+.terrain-forest { background: #d2e9d0; }
+.terrain-river { background: #cfe8ff; }
+.terrain-mountain { background: #e3ddda; }
+.terrain-prairie { background: #f7efc3; }
+.terrain-wetland { background: #d5f1e2; }
+
+.hex-token { font-size: 1.15rem; display: block; }
+.hex-animals { font-size: 0.72rem; opacity: 0.85; display: block; }
+
+.status { margin: 1rem 0; font-weight: 600; }
