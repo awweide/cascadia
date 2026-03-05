@@ -22,8 +22,7 @@ h1, h2 { margin: 0.4rem 0; }
 
 .top-panel,
 .market,
-.board-section,
-.rules {
+.board-section {
   margin-top: 1rem;
   background: var(--card);
   border-radius: 12px;
@@ -45,7 +44,7 @@ button {
 
 .market-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.7rem;
 }
 
@@ -54,11 +53,35 @@ button {
   border-radius: 10px;
   padding: 0.6rem;
   background: #fafafa;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .pair.selected { border-color: var(--selected); box-shadow: 0 0 0 2px rgb(255 209 102 / 50%); }
-.pair-row { margin-top: 0.3rem; font-size: 0.95rem; }
+
+.token-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.market-token {
+  font-size: 1.2rem;
+  background: #fff;
+  border: 1px solid #ccd2da;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.market-token.pick { outline: 2px solid #f2a93f; }
 
 .hex-board {
   position: relative;
@@ -84,6 +107,12 @@ button {
   font-size: 0.85rem;
 }
 
+.market-hex {
+  position: relative;
+  width: calc(var(--hex-size) * 1.73px);
+  height: calc(var(--hex-size) * 2px);
+}
+
 .hex.open {
   background: #eef2f5;
   border-style: dashed;
@@ -98,7 +127,12 @@ button {
 .terrain-prairie { background: #f7efc3; }
 .terrain-wetland { background: #d5f1e2; }
 
-.hex-token { font-size: 1.15rem; display: block; }
-.hex-animals { font-size: 0.72rem; opacity: 0.85; display: block; }
+.hex-token {
+  font-size: 2rem;
+  line-height: 1;
+  display: block;
+  text-shadow: 0 1px 0 #fff;
+}
 
+.hex-animals { font-size: 0.72rem; opacity: 0.9; display: block; background: rgb(255 255 255 / 75%); border-radius: 8px; padding: 0 0.2rem; }
 .status { margin: 1rem 0; font-weight: 600; }

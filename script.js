@@ -4,6 +4,14 @@ const HEX_SIZE = 54;
 
 const terrains = ["forest", "river", "mountain", "prairie", "wetland"];
 const animals = ["🦌", "🦊", "🐻", "🦅", "🐟"];
+const terrainColors = {
+  forest: "#d2e9d0",
+  river: "#cfe8ff",
+  mountain: "#e3ddda",
+  prairie: "#f7efc3",
+  wetland: "#d5f1e2",
+};
+
 const axialDirections = [
   [1, 0],
   [1, -1],
@@ -18,23 +26,27 @@ const state = {
   market: [],
   selectedPairIndex: null,
   selectedPair: null,
-  placedTileCoord: null,
+  pendingRotation: 0,
   turn: 1,
   maxTurns: FULL_TURNS,
   modeName: "Full (20 turns)",
   phase: "pickPair",
   gameOver: false,
+  finalScore: null,
 };
 
 const modeLabelEl = document.getElementById("mode-label");
 const turnCounterEl = document.getElementById("turn-counter");
 const phaseLabelEl = document.getElementById("phase-label");
+const finalScoreEl = document.getElementById("final-score");
 const marketTilesEl = document.getElementById("market-tiles");
 const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
 const modeFullBtn = document.getElementById("mode-full-btn");
 const modeFastBtn = document.getElementById("mode-fast-btn");
+const rotateLeftBtn = document.getElementById("rotate-left-btn");
+const rotateRightBtn = document.getElementById("rotate-right-btn");
 
 function key(q, r) {
   return `${q},${r}`;
@@ -56,13 +68,78 @@ function randomDistinctAnimals() {
   return [first, second];
 }
 
+function randomDistinctTerrains() {
+  const first = randomItem(terrains);
+  let second = randomItem(terrains);
+  while (second === first) second = randomItem(terrains);
+  return [first, second];
+}
+
+function drawDraftTile() {
+  const split = Math.random() < 0.75;
+  if (split) {
+    const [terrainA, terrainB] = randomDistinctTerrains();
+    return {
+      kind: "split",
+      terrainA,
+      terrainB,
+      printedAnimals: randomDistinctAnimals(),
+    };
+  }
+
+  return {
+    kind: "single",
+    terrain: randomItem(terrains),
+    printedAnimals: randomDistinctAnimals(),
+  };
+}
+
 function drawPair() {
   return {
-    tile: {
-      terrain: randomItem(terrains),
-      printedAnimals: randomDistinctAnimals(),
-    },
+    tileDraft: drawDraftTile(),
     token: randomItem(animals),
+  };
+}
+
+function tileFromDraft(tileDraft, rotationSteps) {
+  const rotation = ((rotationSteps % 6) + 6) % 6;
+
+  if (tileDraft.kind === "single") {
+    return {
+      kind: "single",
+      terrain: tileDraft.terrain,
+      printedAnimals: tileDraft.printedAnimals,
+      token: null,
+      starter: false,
+      rotation,
+      terrainsPresent: [tileDraft.terrain],
+      edges: Array(6).fill(tileDraft.terrain),
+    };
+  }
+
+  const baseEdges = [
+    tileDraft.terrainA,
+    tileDraft.terrainA,
+    tileDraft.terrainA,
+    tileDraft.terrainB,
+    tileDraft.terrainB,
+    tileDraft.terrainB,
+  ];
+  const edges = Array(6).fill(null);
+  for (let edge = 0; edge < 6; edge += 1) {
+    edges[(edge + rotation) % 6] = baseEdges[edge];
+  }
+
+  return {
+    kind: "split",
+    terrainA: tileDraft.terrainA,
+    terrainB: tileDraft.terrainB,
+    printedAnimals: tileDraft.printedAnimals,
+    token: null,
+    starter: false,
+    rotation,
+    terrainsPresent: [tileDraft.terrainA, tileDraft.terrainB],
+    edges,
   };
 }
 
@@ -86,19 +163,27 @@ function openPlacementKeys() {
 }
 
 function placeStarterTriangle() {
-  const starterCoords = [
-    { q: 0, r: 0, terrain: "forest", printedAnimals: ["🦌", "🦊"] },
-    { q: 1, r: 0, terrain: "river", printedAnimals: ["🐟", "🦅"] },
-    { q: 0, r: 1, terrain: "mountain", printedAnimals: ["🐻", "🦌"] },
+  const starterTiles = [
+    { q: 0, r: 0, tile: { kind: "single", terrain: "forest", printedAnimals: ["🦌", "🦊"] }, token: null },
+    {
+      q: 1,
+      r: 0,
+      tile: { kind: "split", terrainA: "river", terrainB: "wetland", printedAnimals: ["🐟", "🦅"] },
+      token: null,
+    },
+    {
+      q: 0,
+      r: 1,
+      tile: { kind: "split", terrainA: "mountain", terrainB: "prairie", printedAnimals: ["🐻", "🦌"] },
+      token: null,
+    },
   ];
 
-  starterCoords.forEach((tile) => {
-    state.tiles.set(key(tile.q, tile.r), {
-      terrain: tile.terrain,
-      printedAnimals: tile.printedAnimals,
-      token: null,
-      starter: true,
-    });
+  starterTiles.forEach((starter) => {
+    const built = tileFromDraft(starter.tile, 0);
+    built.starter = true;
+    built.token = starter.token;
+    state.tiles.set(key(starter.q, starter.r), built);
   });
 }
 
@@ -123,7 +208,7 @@ function setStatus(message) {
 function phaseLabel() {
   if (state.gameOver) return "Game Over";
   if (state.phase === "pickPair") return "Pick a pair";
-  if (state.phase === "placeTile") return "Place tile";
+  if (state.phase === "placeTile") return `Place tile (rotation ${state.pendingRotation * 60}°)`;
   return "Place token";
 }
 
@@ -131,6 +216,17 @@ function axialToPixel(q, r) {
   const x = HEX_SIZE * Math.sqrt(3) * (q + r / 2);
   const y = HEX_SIZE * 1.5 * r;
   return { x, y };
+}
+
+function tileBackground(tile) {
+  if (tile.kind === "single") {
+    return terrainColors[tile.terrain];
+  }
+
+  const angle = tile.rotation * 60 - 30;
+  const cA = terrainColors[tile.terrainA];
+  const cB = terrainColors[tile.terrainB];
+  return `conic-gradient(from ${angle}deg, ${cA} 0deg 180deg, ${cB} 180deg 360deg)`;
 }
 
 function renderBoard() {
@@ -154,40 +250,41 @@ function renderBoard() {
   });
 
   const padding = HEX_SIZE * 2.5;
-  const width = Math.max(500, maxX - minX + padding * 2);
-  const height = Math.max(380, maxY - minY + padding * 2 + HEX_SIZE);
-  boardEl.style.width = `${width}px`;
-  boardEl.style.height = `${height}px`;
+  boardEl.style.width = `${Math.max(500, maxX - minX + padding * 2)}px`;
+  boardEl.style.height = `${Math.max(380, maxY - minY + padding * 2 + HEX_SIZE)}px`;
 
   const openKeys = new Set(openPlacementKeys());
 
-  const drawHex = (q, r, tile, isOpen) => {
+  function drawHex(q, r, tile, isOpen) {
     const hex = document.createElement("button");
     hex.type = "button";
     hex.className = "hex";
     const { x, y } = axialToPixel(q, r);
-    const left = x - minX + padding;
-    const top = y - minY + padding;
-    hex.style.left = `${left}px`;
-    hex.style.top = `${top}px`;
+    hex.style.left = `${x - minX + padding}px`;
+    hex.style.top = `${y - minY + padding}px`;
     hex.dataset.q = String(q);
     hex.dataset.r = String(r);
 
     if (isOpen) {
       hex.classList.add("open");
       hex.textContent = "+";
-      hex.addEventListener("click", onBoardHexClick);
     } else {
-      hex.classList.add("filled", `terrain-${tile.terrain}`);
+      hex.classList.add("filled");
       if (tile.starter) hex.classList.add("starter");
-      const tokenText = tile.token ? `<span class="hex-token">${tile.token}</span>` : "<span class=\"hex-token\">·</span>";
-      hex.innerHTML = `${tokenText}<span class="hex-animals">${tile.printedAnimals.join(" ")}</span>`;
-      hex.title = `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`;
-      hex.addEventListener("click", onBoardHexClick);
+      hex.style.background = tileBackground(tile);
+      if (tile.token) {
+        hex.innerHTML = `<span class="hex-token">${tile.token}</span>`;
+      } else {
+        hex.innerHTML = `<span class="hex-animals">${tile.printedAnimals.join(" ")}</span>`;
+      }
+      hex.title = tile.kind === "single"
+        ? `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`
+        : `${tile.terrainA}/${tile.terrainB} (rot ${tile.rotation * 60}°) | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`;
     }
 
+    hex.addEventListener("click", onBoardHexClick);
     boardEl.appendChild(hex);
-  };
+  }
 
   for (const [coordKey, tile] of state.tiles.entries()) {
     const { q, r } = parseKey(coordKey);
@@ -200,17 +297,27 @@ function renderBoard() {
   });
 }
 
+function marketTileHexHTML(pair) {
+  const tile = tileFromDraft(pair.tileDraft, 0);
+  const bg = tileBackground(tile);
+  return `<div class="hex market-hex" style="background:${bg};"></div>`;
+}
+
 function renderMarket() {
   marketTilesEl.innerHTML = "";
   state.market.forEach((pair, index) => {
     const pairEl = document.createElement("button");
     pairEl.type = "button";
-    pairEl.className = `pair terrain-${pair.tile.terrain}`;
+    pairEl.className = "pair";
     if (state.selectedPairIndex === index) pairEl.classList.add("selected");
+
     pairEl.innerHTML = `
-      <div><strong>Terrain:</strong> ${pair.tile.terrain}</div>
-      <div class="pair-row"><strong>Printed animals:</strong> ${pair.tile.printedAnimals.join(" ")}</div>
-      <div class="pair-row"><strong>Token:</strong> ${pair.token}</div>
+      <div>${marketTileHexHTML(pair)}</div>
+      <div class="token-row">
+        <span class="market-token">${pair.tileDraft.printedAnimals[0]}</span>
+        <span class="market-token">${pair.tileDraft.printedAnimals[1]}</span>
+        <span class="market-token pick">${pair.token}</span>
+      </div>
     `;
 
     pairEl.addEventListener("click", () => {
@@ -221,13 +328,110 @@ function renderMarket() {
       }
       state.selectedPairIndex = index;
       state.selectedPair = state.market[index];
+      state.pendingRotation = 0;
       state.phase = "placeTile";
-      setStatus(`Pair selected. Place the ${pair.tile.terrain} tile on an open adjacent hex.`);
+      setStatus("Pair selected. Place tile on an open adjacent hex (rotate if needed).");
       render();
     });
 
     marketTilesEl.appendChild(pairEl);
   });
+}
+
+function tileContainsTerrain(tile, terrainType) {
+  return tile.terrainsPresent.includes(terrainType);
+}
+
+function tilesConnectedForTerrain(coordKeyA, coordKeyB, directionIndex, terrainType) {
+  const tileA = state.tiles.get(coordKeyA);
+  const tileB = state.tiles.get(coordKeyB);
+  if (!tileA || !tileB) return false;
+  if (!tileContainsTerrain(tileA, terrainType) || !tileContainsTerrain(tileB, terrainType)) return false;
+
+  const opposite = (directionIndex + 3) % 6;
+  return tileA.edges[directionIndex] === terrainType && tileB.edges[opposite] === terrainType;
+}
+
+function largestConnectedTerrainGroup(terrainType) {
+  const visited = new Set();
+  let best = 0;
+
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (visited.has(coordKey)) continue;
+    if (!tileContainsTerrain(tile, terrainType)) continue;
+
+    let size = 0;
+    const stack = [coordKey];
+    visited.add(coordKey);
+
+    while (stack.length) {
+      const current = stack.pop();
+      size += 1;
+      const { q, r } = parseKey(current);
+
+      axialDirections.forEach(([dq, dr], directionIndex) => {
+        const neighborKey = key(q + dq, r + dr);
+        if (visited.has(neighborKey)) return;
+        if (!tilesConnectedForTerrain(current, neighborKey, directionIndex, terrainType)) return;
+        visited.add(neighborKey);
+        stack.push(neighborKey);
+      });
+    }
+
+    best = Math.max(best, size);
+  }
+
+  return best;
+}
+
+function largestConnectedAnimalGroup(animalType) {
+  const visited = new Set();
+  let best = 0;
+
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (visited.has(coordKey)) continue;
+    if (tile.token !== animalType) continue;
+
+    let size = 0;
+    const stack = [coordKey];
+    visited.add(coordKey);
+
+    while (stack.length) {
+      const current = stack.pop();
+      size += 1;
+      const { q, r } = parseKey(current);
+      neighboringKeys(q, r).forEach((neighborKey) => {
+        if (visited.has(neighborKey)) return;
+        const neighborTile = state.tiles.get(neighborKey);
+        if (!neighborTile || neighborTile.token !== animalType) return;
+        visited.add(neighborKey);
+        stack.push(neighborKey);
+      });
+    }
+
+    best = Math.max(best, size);
+  }
+
+  return best;
+}
+
+function computeFinalScore() {
+  let terrainTotal = 0;
+  let animalTotal = 0;
+
+  terrains.forEach((terrain) => {
+    terrainTotal += largestConnectedTerrainGroup(terrain);
+  });
+
+  animals.forEach((animal) => {
+    animalTotal += largestConnectedAnimalGroup(animal);
+  });
+
+  return {
+    terrainTotal,
+    animalTotal,
+    total: terrainTotal + animalTotal,
+  };
 }
 
 function finishTurn(chosenPair, placedToken, discardedTokenReason) {
@@ -237,27 +441,27 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   if (state.turn >= state.maxTurns) {
     state.gameOver = true;
     state.phase = "gameOver";
-    const result = computeFinalScore();
+    state.finalScore = computeFinalScore();
     setStatus(
-      `Game over! Final score ${result.total}. Terrain ${result.terrainTotal} + Animal ${result.animalTotal}. ${result.detail}`
+      `Game over! Terrain ${state.finalScore.terrainTotal} + Animal ${state.finalScore.animalTotal} = ${state.finalScore.total}.`
     );
   } else {
     state.turn += 1;
     state.phase = "pickPair";
     if (discardedTokenReason) {
       setStatus(
-        `Placed ${chosenPair.tile.terrain}. Token ${chosenPair.token} discarded (${discardedTokenReason}). Random market discard: ${randomDiscard ? randomDiscard.tile.terrain + " " + randomDiscard.token : "none"}.`
+        `Placed tile. Token ${chosenPair.token} discarded (${discardedTokenReason}). Random market discard: ${randomDiscard ? randomDiscard.token : "none"}.`
       );
     } else {
       setStatus(
-        `Placed ${chosenPair.tile.terrain} and token ${placedToken}. Random market discard: ${randomDiscard ? randomDiscard.tile.terrain + " " + randomDiscard.token : "none"}.`
+        `Placed tile and token ${placedToken}. Random market discard: ${randomDiscard ? randomDiscard.token : "none"}.`
       );
     }
   }
 
   state.selectedPair = null;
   state.selectedPairIndex = null;
-  state.placedTileCoord = null;
+  state.pendingRotation = 0;
   render();
 }
 
@@ -282,13 +486,8 @@ function onBoardHexClick(event) {
       return;
     }
 
-    state.tiles.set(coordKey, {
-      terrain: state.selectedPair.tile.terrain,
-      printedAnimals: state.selectedPair.tile.printedAnimals,
-      token: null,
-      starter: false,
-    });
-    state.placedTileCoord = coordKey;
+    const placedTile = tileFromDraft(state.selectedPair.tileDraft, state.pendingRotation);
+    state.tiles.set(coordKey, placedTile);
     state.phase = "placeToken";
 
     if (!canPlaceTokenAnywhere(state.selectedPair.token)) {
@@ -302,11 +501,11 @@ function onBoardHexClick(event) {
   }
 
   if (state.phase === "placeToken") {
-    if (!state.tiles.has(coordKey)) {
+    const tile = state.tiles.get(coordKey);
+    if (!tile) {
       setStatus("Token can only be placed on an existing tile.");
       return;
     }
-    const tile = state.tiles.get(coordKey);
     if (tile.token) {
       setStatus("That tile already has a token.");
       return;
@@ -318,74 +517,29 @@ function onBoardHexClick(event) {
 
     tile.token = state.selectedPair.token;
     finishTurn(state.selectedPair, state.selectedPair.token, null);
+  }
+}
+
+function rotatePending(delta) {
+  if (state.phase !== "placeTile" || !state.selectedPair) {
+    setStatus("Select a pair and enter tile placement phase before rotating.");
+    return;
+  }
+  if (state.selectedPair.tileDraft.kind === "single") {
+    setStatus("This is a single-terrain tile; rotation has no effect.");
     return;
   }
 
-  setStatus("Select a pair from the market to start your turn.");
-}
-
-function largestConnectedForType(getTypeValue, typeValue) {
-  const visited = new Set();
-  let best = 0;
-
-  for (const [coordKey, tile] of state.tiles.entries()) {
-    if (visited.has(coordKey)) continue;
-    if (getTypeValue(tile) !== typeValue) continue;
-
-    const stack = [coordKey];
-    visited.add(coordKey);
-    let size = 0;
-
-    while (stack.length) {
-      const current = stack.pop();
-      size += 1;
-      const { q, r } = parseKey(current);
-      neighboringKeys(q, r).forEach((neighborKey) => {
-        if (visited.has(neighborKey)) return;
-        const neighborTile = state.tiles.get(neighborKey);
-        if (!neighborTile) return;
-        if (getTypeValue(neighborTile) !== typeValue) return;
-        visited.add(neighborKey);
-        stack.push(neighborKey);
-      });
-    }
-
-    best = Math.max(best, size);
-  }
-
-  return best;
-}
-
-function computeFinalScore() {
-  let terrainTotal = 0;
-  let animalTotal = 0;
-  const terrainParts = [];
-  const animalParts = [];
-
-  terrains.forEach((terrain) => {
-    const score = largestConnectedForType((tile) => tile.terrain, terrain);
-    terrainTotal += score;
-    terrainParts.push(`${terrain}:${score}`);
-  });
-
-  animals.forEach((animal) => {
-    const score = largestConnectedForType((tile) => tile.token, animal);
-    animalTotal += score;
-    animalParts.push(`${animal}:${score}`);
-  });
-
-  return {
-    terrainTotal,
-    animalTotal,
-    total: terrainTotal + animalTotal,
-    detail: `Terrain groups [${terrainParts.join(" ")}], Animal groups [${animalParts.join(" ")}].`,
-  };
+  state.pendingRotation = (state.pendingRotation + delta + 6) % 6;
+  setStatus(`Rotation set to ${state.pendingRotation * 60}° for the selected tile.`);
+  render();
 }
 
 function render() {
   modeLabelEl.textContent = state.modeName;
   turnCounterEl.textContent = `${Math.min(state.turn, state.maxTurns)} / ${state.maxTurns}`;
   phaseLabelEl.textContent = phaseLabel();
+  finalScoreEl.textContent = state.finalScore ? String(state.finalScore.total) : "-";
   renderMarket();
   renderBoard();
 }
@@ -405,10 +559,11 @@ function restartGame(turns) {
   refillMarketToFour();
   state.selectedPairIndex = null;
   state.selectedPair = null;
-  state.placedTileCoord = null;
+  state.pendingRotation = 0;
   state.turn = 1;
   state.phase = "pickPair";
   state.gameOver = false;
+  state.finalScore = null;
 
   setStatus("New game started. Pick a pair, place tile first, then token.");
   render();
@@ -417,5 +572,7 @@ function restartGame(turns) {
 restartBtn.addEventListener("click", () => restartGame(state.maxTurns));
 modeFullBtn.addEventListener("click", () => restartGame(FULL_TURNS));
 modeFastBtn.addEventListener("click", () => restartGame(FAST_TURNS));
+rotateLeftBtn.addEventListener("click", () => rotatePending(-1));
+rotateRightBtn.addEventListener("click", () => rotatePending(1));
 
 restartGame(FULL_TURNS);
