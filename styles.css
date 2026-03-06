@@ -30,7 +30,7 @@ h1, h2 { margin: 0.4rem 0; }
   box-shadow: 0 1px 6px rgb(0 0 0 / 8%);
 }
 
-.top-panel { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.top-panel { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
 .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
 button {
@@ -40,6 +40,31 @@ button {
   color: #fff;
   padding: 0.55rem 0.85rem;
   cursor: pointer;
+}
+
+.score-breakdown {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.score-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.8rem;
+}
+
+.score-breakdown ul {
+  margin: 0.2rem 0;
+  padding-left: 1.1rem;
+}
+
+.score-subtotal,
+.score-total {
+  margin: 0.18rem 0;
+}
+
+.score-total {
+  font-weight: 700;
 }
 
 .market-tiles {
@@ -56,10 +81,28 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .pair.selected { border-color: var(--selected); box-shadow: 0 0 0 2px rgb(255 209 102 / 50%); }
+
+.pair-type {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #5b6678;
+}
+
+.bonus-badge {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  background: #fdf4cc;
+  color: #765500;
+  border: 1px solid #e8d58f;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
 
 .token-row {
   display: flex;
@@ -120,12 +163,7 @@ button {
 
 .hex.filled { color: #142; font-weight: 600; }
 .hex.starter { outline: 2px solid #5d8fbf; }
-
-.terrain-forest { background: #83a07f; }
-.terrain-river { background: #7ca3c5; }
-.terrain-mountain { background: #a6a09d; }
-.terrain-prairie { background: #f7efc3; }
-.terrain-wetland { background: #d5f1e2; }
+.hex.bonus-tile { box-shadow: inset 0 0 0 2px #e0b000; }
 
 .hex-token {
   font-size: 2rem;
