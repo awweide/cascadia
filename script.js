@@ -1,5 +1,4 @@
 const FULL_TURNS = 20;
-const FAST_TURNS = 6;
 const HEX_SIZE = 54;
 
 const terrains = ["forest", "river", "mountain", "prairie", "wetland"];
@@ -10,6 +9,22 @@ const terrainColors = {
   mountain: "#a6a09d",
   prairie: "#f7efc3",
   wetland: "#d5f1e2",
+};
+
+const terrainNames = {
+  forest: "Forest",
+  river: "River",
+  mountain: "Mountain",
+  prairie: "Prairie",
+  wetland: "Wetland",
+};
+
+const animalNames = {
+  "🦌": "Deer",
+  "🦊": "Fox",
+  "🐻": "Bear",
+  "🦅": "Hawk",
+  "🐟": "Salmon",
 };
 
 const axialDirections = [
@@ -29,10 +44,9 @@ const state = {
   pendingRotation: 0,
   turn: 1,
   maxTurns: FULL_TURNS,
-  modeName: "Full (20 turns)",
   phase: "pickPair",
   gameOver: false,
-  finalScore: null,
+  score: null,
   hoverCoordKey: null,
   boardLayout: {
     minX: 0,
@@ -42,16 +56,14 @@ const state = {
   },
 };
 
-const modeLabelEl = document.getElementById("mode-label");
 const turnCounterEl = document.getElementById("turn-counter");
 const phaseLabelEl = document.getElementById("phase-label");
 const finalScoreEl = document.getElementById("final-score");
+const scoreBreakdownEl = document.getElementById("score-breakdown");
 const marketTilesEl = document.getElementById("market-tiles");
 const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
-const modeFullBtn = document.getElementById("mode-full-btn");
-const modeFastBtn = document.getElementById("mode-fast-btn");
 const rotateLeftBtn = document.getElementById("rotate-left-btn");
 const rotateRightBtn = document.getElementById("rotate-right-btn");
 
@@ -68,11 +80,15 @@ function randomItem(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function randomDistinctAnimals() {
-  const first = randomItem(animals);
-  let second = randomItem(animals);
-  while (second === first) second = randomItem(animals);
-  return [first, second];
+function randomDistinctAnimals(count) {
+  const pool = [...animals];
+  const picks = [];
+  while (picks.length < count && pool.length) {
+    const index = Math.floor(Math.random() * pool.length);
+    picks.push(pool[index]);
+    pool.splice(index, 1);
+  }
+  return picks;
 }
 
 function randomDistinctTerrains() {
@@ -82,23 +98,34 @@ function randomDistinctTerrains() {
   return [first, second];
 }
 
-function drawDraftTile() {
-  const split = Math.random() < 0.75;
-  if (split) {
-    const [terrainA, terrainB] = randomDistinctTerrains();
+function drawDraftTileByType(type) {
+  if (type === "single-single") {
     return {
-      kind: "split",
-      terrainA,
-      terrainB,
-      printedAnimals: randomDistinctAnimals(),
+      kind: "single",
+      terrain: randomItem(terrains),
+      printedAnimals: [randomItem(animals)],
+      bonusOnToken: true,
+      marketType: type,
     };
   }
 
+  const [terrainA, terrainB] = randomDistinctTerrains();
+  const animalCount = type === "split-double" ? 2 : 3;
   return {
-    kind: "single",
-    terrain: randomItem(terrains),
-    printedAnimals: randomDistinctAnimals(),
+    kind: "split",
+    terrainA,
+    terrainB,
+    printedAnimals: randomDistinctAnimals(animalCount),
+    bonusOnToken: false,
+    marketType: type,
   };
+}
+
+function drawDraftTile() {
+  const roll = Math.random();
+  if (roll < 1 / 3) return drawDraftTileByType("single-single");
+  if (roll < 2 / 3) return drawDraftTileByType("split-double");
+  return drawDraftTileByType("split-triple");
 }
 
 function drawPair() {
@@ -115,12 +142,14 @@ function tileFromDraft(tileDraft, rotationSteps) {
     return {
       kind: "single",
       terrain: tileDraft.terrain,
-      printedAnimals: tileDraft.printedAnimals,
+      printedAnimals: [...tileDraft.printedAnimals],
       token: null,
       starter: false,
       rotation,
       terrainsPresent: [tileDraft.terrain],
       edges: Array(6).fill(tileDraft.terrain),
+      bonusOnToken: Boolean(tileDraft.bonusOnToken),
+      marketType: tileDraft.marketType ?? null,
     };
   }
 
@@ -141,12 +170,14 @@ function tileFromDraft(tileDraft, rotationSteps) {
     kind: "split",
     terrainA: tileDraft.terrainA,
     terrainB: tileDraft.terrainB,
-    printedAnimals: tileDraft.printedAnimals,
+    printedAnimals: [...tileDraft.printedAnimals],
     token: null,
     starter: false,
     rotation,
     terrainsPresent: [tileDraft.terrainA, tileDraft.terrainB],
     edges,
+    bonusOnToken: false,
+    marketType: tileDraft.marketType ?? null,
   };
 }
 
@@ -171,23 +202,46 @@ function openPlacementKeys() {
 
 function placeStarterTriangle() {
   const starterTiles = [
-    { q: 0, r: 0, tile: { kind: "single", terrain: "forest", printedAnimals: ["🦌", "🦊"] }, token: null },
+    {
+      q: 0,
+      r: 0,
+      tile: {
+        kind: "single",
+        terrain: "forest",
+        printedAnimals: ["🦌"],
+        bonusOnToken: false,
+      },
+      token: null,
+      rotation: 0,
+    },
     {
       q: 1,
       r: 0,
-      tile: { kind: "split", terrainA: "river", terrainB: "wetland", printedAnimals: ["🐟", "🦅"] },
+      tile: {
+        kind: "split",
+        terrainA: "river",
+        terrainB: "mountain",
+        printedAnimals: ["🦊", "🐟"],
+      },
       token: null,
+      rotation: 2,
     },
     {
       q: 0,
       r: 1,
-      tile: { kind: "split", terrainA: "mountain", terrainB: "prairie", printedAnimals: ["🐻", "🦌"] },
+      tile: {
+        kind: "split",
+        terrainA: "prairie",
+        terrainB: "wetland",
+        printedAnimals: ["🐻", "🦅", "🦌"],
+      },
       token: null,
+      rotation: 1,
     },
   ];
 
   starterTiles.forEach((starter) => {
-    const built = tileFromDraft(starter.tile, 0);
+    const built = tileFromDraft(starter.tile, starter.rotation);
     built.starter = true;
     built.token = starter.token;
     state.tiles.set(key(starter.q, starter.r), built);
@@ -223,58 +277,6 @@ function axialToPixel(q, r) {
   const x = HEX_SIZE * Math.sqrt(3) * (q + r / 2);
   const y = HEX_SIZE * 1.5 * r;
   return { x, y };
-}
-
-function pixelToAxial(x, y) {
-  const q = ((Math.sqrt(3) / 3) * x - (1 / 3) * y) / HEX_SIZE;
-  const r = ((2 / 3) * y) / HEX_SIZE;
-  return { q, r };
-}
-
-function roundAxial(q, r) {
-  let x = q;
-  let z = r;
-  let y = -x - z;
-
-  let rx = Math.round(x);
-  let ry = Math.round(y);
-  let rz = Math.round(z);
-
-  const xDiff = Math.abs(rx - x);
-  const yDiff = Math.abs(ry - y);
-  const zDiff = Math.abs(rz - z);
-
-  if (xDiff > yDiff && xDiff > zDiff) rx = -ry - rz;
-  else if (yDiff > zDiff) ry = -rx - rz;
-  else rz = -rx - ry;
-
-  return { q: rx, r: rz };
-}
-
-function hoverTokenIsLegal(coordKey) {
-  if (state.phase !== "placeToken" || !state.selectedPair) return false;
-  const tile = state.tiles.get(coordKey);
-  return Boolean(tile && !tile.token && tile.printedAnimals.includes(state.selectedPair.token));
-}
-
-function updateHoverCoordFromPointer(clientX, clientY) {
-  const rect = boardEl.getBoundingClientRect();
-  const localX = clientX - rect.left;
-  const localY = clientY - rect.top;
-
-  const boardX = localX - (state.boardLayout.padding - state.boardLayout.minX);
-  const boardY = localY - (state.boardLayout.padding - state.boardLayout.minY);
-  const axial = pixelToAxial(boardX, boardY);
-  const rounded = roundAxial(axial.q, axial.r);
-  const hoverKey = key(rounded.q, rounded.r);
-
-  if (state.phase === "placeTile") {
-    state.hoverCoordKey = state.boardLayout.openKeys.has(hoverKey) ? hoverKey : null;
-  } else if (state.phase === "placeToken") {
-    state.hoverCoordKey = hoverTokenIsLegal(hoverKey) ? hoverKey : null;
-  } else {
-    state.hoverCoordKey = null;
-  }
 }
 
 function tileBackground(tile) {
@@ -340,6 +342,7 @@ function renderBoard() {
     } else {
       hex.classList.add("filled");
       if (tile.starter) hex.classList.add("starter");
+      if (tile.bonusOnToken) hex.classList.add("bonus-tile");
       hex.style.background = tileBackground(tile);
 
       const showTokenPreview = state.hoverCoordKey === coordKey && hoverTokenIsLegal(coordKey);
@@ -351,9 +354,13 @@ function renderBoard() {
       } else {
         hex.innerHTML = `<span class="hex-animals">${tile.printedAnimals.join(" ")}</span>`;
       }
-      hex.title = tile.kind === "single"
-        ? `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`
-        : `${tile.terrainA}/${tile.terrainB} (rot ${tile.rotation * 60}°) | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`;
+
+      if (tile.kind === "single") {
+        const bonusText = tile.bonusOnToken ? " | +1 if token placed" : "";
+        hex.title = `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}${bonusText}`;
+      } else {
+        hex.title = `${tile.terrainA}/${tile.terrainB} (rot ${tile.rotation * 60}°) | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`;
+      }
     }
 
     hex.addEventListener("click", onBoardHexClick);
@@ -374,7 +381,8 @@ function renderBoard() {
 function marketTileHexHTML(pair) {
   const tile = tileFromDraft(pair.tileDraft, 0);
   const bg = tileBackground(tile);
-  return `<div class="hex market-hex" style="background:${bg};"><span class="hex-animals">${pair.tileDraft.printedAnimals.join(" ")}</span></div>`;
+  const bonusBadge = pair.tileDraft.bonusOnToken ? '<span class="bonus-badge">+1 bonus when token placed</span>' : "";
+  return `<div class="hex market-hex" style="background:${bg};"><span class="hex-animals">${pair.tileDraft.printedAnimals.join(" ")}</span></div>${bonusBadge}`;
 }
 
 function renderMarket() {
@@ -391,6 +399,7 @@ function renderMarket() {
         <span>Token:</span>
         <span class="market-token pick">${pair.token}</span>
       </div>
+      <div class="pair-type">${pair.tileDraft.marketType ?? "starter"}</div>
     `;
 
     pairEl.addEventListener("click", () => {
@@ -488,23 +497,64 @@ function largestConnectedAnimalGroup(animalType) {
   return best;
 }
 
-function computeFinalScore() {
-  let terrainTotal = 0;
-  let animalTotal = 0;
+function countBonusTilesWithTokens() {
+  let bonus = 0;
+  for (const tile of state.tiles.values()) {
+    if (tile.bonusOnToken && tile.token) bonus += 1;
+  }
+  return bonus;
+}
+
+function computeScoreBreakdown() {
+  const terrainScores = {};
+  const animalScores = {};
 
   terrains.forEach((terrain) => {
-    terrainTotal += largestConnectedTerrainGroup(terrain);
+    terrainScores[terrain] = largestConnectedTerrainGroup(terrain);
   });
 
   animals.forEach((animal) => {
-    animalTotal += largestConnectedAnimalGroup(animal);
+    animalScores[animal] = largestConnectedAnimalGroup(animal);
   });
 
+  const terrainTotal = terrains.reduce((sum, terrain) => sum + terrainScores[terrain], 0);
+  const animalTotal = animals.reduce((sum, animal) => sum + animalScores[animal], 0);
+  const bonusTotal = countBonusTilesWithTokens();
+
   return {
+    terrainScores,
+    animalScores,
     terrainTotal,
     animalTotal,
-    total: terrainTotal + animalTotal,
+    bonusTotal,
+    total: terrainTotal + animalTotal + bonusTotal,
   };
+}
+
+function renderScoreBreakdown(score) {
+  const terrainItems = terrains
+    .map((terrain) => `<li>${terrainNames[terrain]}: ${score.terrainScores[terrain]}</li>`)
+    .join("");
+  const animalItems = animals
+    .map((animal) => `<li>${animal} ${animalNames[animal]}: ${score.animalScores[animal]}</li>`)
+    .join("");
+
+  scoreBreakdownEl.innerHTML = `
+    <div class="score-columns">
+      <div>
+        <strong>Terrain contributions</strong>
+        <ul>${terrainItems}</ul>
+        <p class="score-subtotal">Terrain subtotal: ${score.terrainTotal}</p>
+      </div>
+      <div>
+        <strong>Animal contributions</strong>
+        <ul>${animalItems}</ul>
+        <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
+      </div>
+    </div>
+    <p class="score-subtotal">Bonus from occupied single-terrain/single-animal market tiles: ${score.bonusTotal}</p>
+    <p class="score-total">Total = Terrain ${score.terrainTotal} + Animal ${score.animalTotal} + Bonus ${score.bonusTotal} = ${score.total}</p>
+  `;
 }
 
 function finishTurn(chosenPair, placedToken, discardedTokenReason) {
@@ -514,9 +564,9 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   if (state.turn >= state.maxTurns) {
     state.gameOver = true;
     state.phase = "gameOver";
-    state.finalScore = computeFinalScore();
+    state.score = computeScoreBreakdown();
     setStatus(
-      `Game over! Terrain ${state.finalScore.terrainTotal} + Animal ${state.finalScore.animalTotal} = ${state.finalScore.total}.`
+      `Game over! Terrain ${state.score.terrainTotal} + Animal ${state.score.animalTotal} + Bonus ${state.score.bonusTotal} = ${state.score.total}.`
     );
   } else {
     state.turn += 1;
@@ -537,6 +587,12 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   state.pendingRotation = 0;
   state.hoverCoordKey = null;
   render();
+}
+
+function hoverTokenIsLegal(coordKey) {
+  if (state.phase !== "placeToken" || !state.selectedPair) return false;
+  const tile = state.tiles.get(coordKey);
+  return Boolean(tile && !tile.token && tile.printedAnimals.includes(state.selectedPair.token));
 }
 
 function onBoardHexClick(event) {
@@ -610,23 +666,17 @@ function rotatePending(delta) {
 }
 
 function render() {
-  modeLabelEl.textContent = state.modeName;
+  const score = computeScoreBreakdown();
+  state.score = score;
   turnCounterEl.textContent = `${Math.min(state.turn, state.maxTurns)} / ${state.maxTurns}`;
   phaseLabelEl.textContent = phaseLabel();
-  finalScoreEl.textContent = state.finalScore ? String(state.finalScore.total) : "-";
+  finalScoreEl.textContent = String(score.total);
+  renderScoreBreakdown(score);
   renderMarket();
   renderBoard();
 }
 
-function restartGame(turns) {
-  if (turns === FAST_TURNS) {
-    state.maxTurns = FAST_TURNS;
-    state.modeName = "Fast (6 turns)";
-  } else {
-    state.maxTurns = FULL_TURNS;
-    state.modeName = "Full (20 turns)";
-  }
-
+function restartGame() {
   state.tiles = new Map();
   placeStarterTriangle();
   state.market = [];
@@ -637,16 +687,14 @@ function restartGame(turns) {
   state.turn = 1;
   state.phase = "pickPair";
   state.gameOver = false;
-  state.finalScore = null;
+  state.score = computeScoreBreakdown();
   state.hoverCoordKey = null;
 
   setStatus("New game started. Pick a pair, place tile first, then token.");
   render();
 }
 
-restartBtn.addEventListener("click", () => restartGame(state.maxTurns));
-modeFullBtn.addEventListener("click", () => restartGame(FULL_TURNS));
-modeFastBtn.addEventListener("click", () => restartGame(FAST_TURNS));
+restartBtn.addEventListener("click", restartGame);
 rotateLeftBtn.addEventListener("click", () => rotatePending(-1));
 rotateRightBtn.addEventListener("click", () => rotatePending(1));
 
@@ -692,4 +740,4 @@ boardEl.addEventListener("mouseleave", () => {
   renderBoard();
 });
 
-restartGame(FULL_TURNS);
+restartGame();
