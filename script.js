@@ -134,7 +134,7 @@ function tileFromDraft(tileDraft, rotationSteps) {
   ];
   const edges = Array(6).fill(null);
   for (let edge = 0; edge < 6; edge += 1) {
-    edges[(edge + rotation) % 6] = baseEdges[edge];
+    edges[(edge - rotation + 6) % 6] = baseEdges[edge];
   }
 
   return {
@@ -374,7 +374,7 @@ function renderBoard() {
 function marketTileHexHTML(pair) {
   const tile = tileFromDraft(pair.tileDraft, 0);
   const bg = tileBackground(tile);
-  return `<div class="hex market-hex" style="background:${bg};"></div>`;
+  return `<div class="hex market-hex" style="background:${bg};"><span class="hex-animals">${pair.tileDraft.printedAnimals.join(" ")}</span></div>`;
 }
 
 function renderMarket() {
@@ -388,8 +388,7 @@ function renderMarket() {
     pairEl.innerHTML = `
       <div>${marketTileHexHTML(pair)}</div>
       <div class="token-row">
-        <span class="market-token">${pair.tileDraft.printedAnimals[0]}</span>
-        <span class="market-token">${pair.tileDraft.printedAnimals[1]}</span>
+        <span>Token:</span>
         <span class="market-token pick">${pair.token}</span>
       </div>
     `;
@@ -660,9 +659,30 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+function updateHoverCoordFromEventTarget(event) {
+  if (state.phase !== "placeTile" && state.phase !== "placeToken") {
+    state.hoverCoordKey = null;
+    return;
+  }
+
+  const hexEl = event.target.closest(".hex");
+  if (!hexEl || !boardEl.contains(hexEl)) {
+    state.hoverCoordKey = null;
+    return;
+  }
+
+  const hoverKey = key(Number(hexEl.dataset.q), Number(hexEl.dataset.r));
+  if (state.phase === "placeTile") {
+    state.hoverCoordKey = state.boardLayout.openKeys.has(hoverKey) ? hoverKey : null;
+    return;
+  }
+
+  state.hoverCoordKey = hoverTokenIsLegal(hoverKey) ? hoverKey : null;
+}
+
 boardEl.addEventListener("mousemove", (event) => {
   const prev = state.hoverCoordKey;
-  updateHoverCoordFromPointer(event.clientX, event.clientY);
+  updateHoverCoordFromEventTarget(event);
   if (prev !== state.hoverCoordKey) renderBoard();
 });
 
