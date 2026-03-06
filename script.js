@@ -5,9 +5,9 @@ const HEX_SIZE = 54;
 const terrains = ["forest", "river", "mountain", "prairie", "wetland"];
 const animals = ["🦌", "🦊", "🐻", "🦅", "🐟"];
 const terrainColors = {
-  forest: "#d2e9d0",
-  river: "#cfe8ff",
-  mountain: "#e3ddda",
+  forest: "#83a07f",
+  river: "#7ca3c5",
+  mountain: "#a6a09d",
   prairie: "#f7efc3",
   wetland: "#d5f1e2",
 };
@@ -33,6 +33,13 @@ const state = {
   phase: "pickPair",
   gameOver: false,
   finalScore: null,
+  hoverCoordKey: null,
+  boardLayout: {
+    minX: 0,
+    minY: 0,
+    padding: HEX_SIZE * 2.5,
+    openKeys: new Set(),
+  },
 };
 
 const modeLabelEl = document.getElementById("mode-label");
@@ -218,12 +225,64 @@ function axialToPixel(q, r) {
   return { x, y };
 }
 
+function pixelToAxial(x, y) {
+  const q = ((Math.sqrt(3) / 3) * x - (1 / 3) * y) / HEX_SIZE;
+  const r = ((2 / 3) * y) / HEX_SIZE;
+  return { q, r };
+}
+
+function roundAxial(q, r) {
+  let x = q;
+  let z = r;
+  let y = -x - z;
+
+  let rx = Math.round(x);
+  let ry = Math.round(y);
+  let rz = Math.round(z);
+
+  const xDiff = Math.abs(rx - x);
+  const yDiff = Math.abs(ry - y);
+  const zDiff = Math.abs(rz - z);
+
+  if (xDiff > yDiff && xDiff > zDiff) rx = -ry - rz;
+  else if (yDiff > zDiff) ry = -rx - rz;
+  else rz = -rx - ry;
+
+  return { q: rx, r: rz };
+}
+
+function hoverTokenIsLegal(coordKey) {
+  if (state.phase !== "placeToken" || !state.selectedPair) return false;
+  const tile = state.tiles.get(coordKey);
+  return Boolean(tile && !tile.token && tile.printedAnimals.includes(state.selectedPair.token));
+}
+
+function updateHoverCoordFromPointer(clientX, clientY) {
+  const rect = boardEl.getBoundingClientRect();
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+
+  const boardX = localX - (state.boardLayout.padding - state.boardLayout.minX);
+  const boardY = localY - (state.boardLayout.padding - state.boardLayout.minY);
+  const axial = pixelToAxial(boardX, boardY);
+  const rounded = roundAxial(axial.q, axial.r);
+  const hoverKey = key(rounded.q, rounded.r);
+
+  if (state.phase === "placeTile") {
+    state.hoverCoordKey = state.boardLayout.openKeys.has(hoverKey) ? hoverKey : null;
+  } else if (state.phase === "placeToken") {
+    state.hoverCoordKey = hoverTokenIsLegal(hoverKey) ? hoverKey : null;
+  } else {
+    state.hoverCoordKey = null;
+  }
+}
+
 function tileBackground(tile) {
   if (tile.kind === "single") {
     return terrainColors[tile.terrain];
   }
 
-  const angle = tile.rotation * 60 - 30;
+  const angle = tile.rotation * 60;
   const cA = terrainColors[tile.terrainA];
   const cB = terrainColors[tile.terrainB];
   return `conic-gradient(from ${angle}deg, ${cA} 0deg 180deg, ${cB} 180deg 360deg)`;
@@ -254,6 +313,7 @@ function renderBoard() {
   boardEl.style.height = `${Math.max(380, maxY - minY + padding * 2 + HEX_SIZE)}px`;
 
   const openKeys = new Set(openPlacementKeys());
+  state.boardLayout = { minX, minY, padding, openKeys };
 
   function drawHex(q, r, tile, isOpen) {
     const hex = document.createElement("button");
@@ -265,15 +325,29 @@ function renderBoard() {
     hex.dataset.q = String(q);
     hex.dataset.r = String(r);
 
+    const coordKey = key(q, r);
+
     if (isOpen) {
-      hex.classList.add("open");
-      hex.textContent = "+";
+      if (state.phase === "placeTile" && state.selectedPair && state.hoverCoordKey === coordKey) {
+        const previewTile = tileFromDraft(state.selectedPair.tileDraft, state.pendingRotation);
+        hex.classList.add("preview");
+        hex.style.background = tileBackground(previewTile);
+        hex.innerHTML = `<span class="hex-animals">${previewTile.printedAnimals.join(" ")}</span>`;
+      } else {
+        hex.classList.add("open");
+        hex.textContent = "+";
+      }
     } else {
       hex.classList.add("filled");
       if (tile.starter) hex.classList.add("starter");
       hex.style.background = tileBackground(tile);
+
+      const showTokenPreview = state.hoverCoordKey === coordKey && hoverTokenIsLegal(coordKey);
       if (tile.token) {
         hex.innerHTML = `<span class="hex-token">${tile.token}</span>`;
+      } else if (showTokenPreview) {
+        hex.classList.add("token-preview");
+        hex.innerHTML = `<span class="hex-token">${state.selectedPair.token}</span>`;
       } else {
         hex.innerHTML = `<span class="hex-animals">${tile.printedAnimals.join(" ")}</span>`;
       }
@@ -462,6 +536,7 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   state.selectedPair = null;
   state.selectedPairIndex = null;
   state.pendingRotation = 0;
+  state.hoverCoordKey = null;
   render();
 }
 
@@ -564,6 +639,7 @@ function restartGame(turns) {
   state.phase = "pickPair";
   state.gameOver = false;
   state.finalScore = null;
+  state.hoverCoordKey = null;
 
   setStatus("New game started. Pick a pair, place tile first, then token.");
   render();
@@ -574,5 +650,26 @@ modeFullBtn.addEventListener("click", () => restartGame(FULL_TURNS));
 modeFastBtn.addEventListener("click", () => restartGame(FAST_TURNS));
 rotateLeftBtn.addEventListener("click", () => rotatePending(-1));
 rotateRightBtn.addEventListener("click", () => rotatePending(1));
+
+document.addEventListener("keydown", (event) => {
+  if (event.key.toLowerCase() === "z") {
+    rotatePending(-1);
+  }
+  if (event.key.toLowerCase() === "x") {
+    rotatePending(1);
+  }
+});
+
+boardEl.addEventListener("mousemove", (event) => {
+  const prev = state.hoverCoordKey;
+  updateHoverCoordFromPointer(event.clientX, event.clientY);
+  if (prev !== state.hoverCoordKey) renderBoard();
+});
+
+boardEl.addEventListener("mouseleave", () => {
+  if (!state.hoverCoordKey) return;
+  state.hoverCoordKey = null;
+  renderBoard();
+});
 
 restartGame(FULL_TURNS);
