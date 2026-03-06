@@ -163,7 +163,7 @@ function tileFromDraft(tileDraft, rotationSteps) {
   ];
   const edges = Array(6).fill(null);
   for (let edge = 0; edge < 6; edge += 1) {
-    edges[(edge - rotation + 6) % 6] = baseEdges[edge];
+    edges[(edge + rotation) % 6] = baseEdges[edge];
   }
 
   return {
@@ -224,7 +224,7 @@ function placeStarterTriangle() {
         printedAnimals: ["🦊", "🐟"],
       },
       token: null,
-      rotation: 2,
+      rotation: 1,
     },
     {
       q: 0,
@@ -236,7 +236,7 @@ function placeStarterTriangle() {
         printedAnimals: ["🐻", "🦅", "🦌"],
       },
       token: null,
-      rotation: 1,
+      rotation: 0,
     },
   ];
 
@@ -255,11 +255,28 @@ function canPlaceTokenAnywhere(tokenAnimal) {
   return false;
 }
 
-function discardRandomMarketPair() {
+function removePickedMarketPair(chosenPair) {
+  if (state.selectedPairIndex !== null && state.selectedPairIndex >= 0 && state.selectedPairIndex < state.market.length) {
+    const [removed] = state.market.splice(state.selectedPairIndex, 1);
+    if (removed === chosenPair) return removed;
+    const fallbackIndex = state.market.indexOf(chosenPair);
+    if (fallbackIndex >= 0) {
+      const [fallbackRemoved] = state.market.splice(fallbackIndex, 1);
+      return fallbackRemoved;
+    }
+    return removed;
+  }
+
+  const index = state.market.indexOf(chosenPair);
+  if (index < 0) return null;
+  const [removed] = state.market.splice(index, 1);
+  return removed;
+}
+
+function removeLeftmostMarketPair() {
   if (state.market.length === 0) return null;
-  const index = Math.floor(Math.random() * state.market.length);
-  const [discarded] = state.market.splice(index, 1);
-  return discarded;
+  const [removed] = state.market.splice(0, 1);
+  return removed;
 }
 
 function setStatus(message) {
@@ -558,7 +575,8 @@ function renderScoreBreakdown(score) {
 }
 
 function finishTurn(chosenPair, placedToken, discardedTokenReason) {
-  const randomDiscard = discardRandomMarketPair();
+  removePickedMarketPair(chosenPair);
+  const leftmostDiscard = removeLeftmostMarketPair();
   refillMarketToFour();
 
   if (state.turn >= state.maxTurns) {
@@ -573,11 +591,11 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
     state.phase = "pickPair";
     if (discardedTokenReason) {
       setStatus(
-        `Placed tile. Token ${chosenPair.token} discarded (${discardedTokenReason}). Random market discard: ${randomDiscard ? randomDiscard.token : "none"}.`
+        `Placed tile. Token ${chosenPair.token} discarded (${discardedTokenReason}). Removed chosen pair and leftmost remaining pair (${leftmostDiscard ? leftmostDiscard.token : "none"}) before refill.`
       );
     } else {
       setStatus(
-        `Placed tile and token ${placedToken}. Random market discard: ${randomDiscard ? randomDiscard.token : "none"}.`
+        `Placed tile and token ${placedToken}. Removed chosen pair and leftmost remaining pair (${leftmostDiscard ? leftmostDiscard.token : "none"}) before refill.`
       );
     }
   }
