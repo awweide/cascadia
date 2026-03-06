@@ -17,10 +17,11 @@
           <p>Turn: <span id="turn-counter">1 / 20</span></p>
           <p>Phase: <span id="phase-label">Pick a pair</span></p>
           <p>Final Score: <span id="final-score">-</span></p>
+          <p id="status" class="status" aria-live="polite">Choose a pair to begin.</p>
         </div>
         <div class="controls">
-          <button id="rotate-left-btn" type="button">Rotate ⟲</button>
-          <button id="rotate-right-btn" type="button">Rotate ⟳</button>
+          <button id="rotate-left-btn" type="button">Rotate ⟲ (Z)</button>
+          <button id="rotate-right-btn" type="button">Rotate ⟳ (X)</button>
           <button id="mode-full-btn" type="button">Full 20</button>
           <button id="mode-fast-btn" type="button">Fast 6</button>
           <button id="restart-btn" type="button">Restart</button>
@@ -37,8 +38,6 @@
         <h2>Open-Ended Hex Board</h2>
         <div id="board" class="hex-board" aria-label="Hex board"></div>
       </section>
-
-      <p id="status" class="status" aria-live="polite">Choose a pair to begin.</p>
     </main>
 
     <script src="script.js"></script>
