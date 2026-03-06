@@ -27,13 +27,14 @@ const animalNames = {
   "🐟": "Salmon",
 };
 
+// Edge indices are ordered clockwise as: NE, E, SE, SW, W, NW.
 const axialDirections = [
-  [1, 0],
   [1, -1],
-  [0, -1],
-  [-1, 0],
-  [-1, 1],
+  [1, 0],
   [0, 1],
+  [-1, 1],
+  [-1, 0],
+  [0, -1],
 ];
 
 const state = {
@@ -441,45 +442,83 @@ function tileContainsTerrain(tile, terrainType) {
   return tile.terrainsPresent.includes(terrainType);
 }
 
-function tilesConnectedForTerrain(coordKeyA, coordKeyB, directionIndex, terrainType) {
-  const tileA = state.tiles.get(coordKeyA);
-  const tileB = state.tiles.get(coordKeyB);
-  if (!tileA || !tileB) return false;
-  if (!tileContainsTerrain(tileA, terrainType) || !tileContainsTerrain(tileB, terrainType)) return false;
-
+function terrainEdgeMatches(tileA, tileB, directionIndex, terrainType) {
   const opposite = (directionIndex + 3) % 6;
   return tileA.edges[directionIndex] === terrainType && tileB.edges[opposite] === terrainType;
 }
 
-function largestConnectedTerrainGroup(terrainType) {
-  const visited = new Set();
-  let best = 0;
+function buildTerrainRegionGroups(terrainType) {
+  const parents = new Map();
+  const sizes = new Map();
 
-  for (const [coordKey, tile] of state.tiles.entries()) {
-    if (visited.has(coordKey)) continue;
-    if (!tileContainsTerrain(tile, terrainType)) continue;
-
-    let size = 0;
-    const stack = [coordKey];
-    visited.add(coordKey);
-
-    while (stack.length) {
-      const current = stack.pop();
-      size += 1;
-      const { q, r } = parseKey(current);
-
-      axialDirections.forEach(([dq, dr], directionIndex) => {
-        const neighborKey = key(q + dq, r + dr);
-        if (visited.has(neighborKey)) return;
-        if (!tilesConnectedForTerrain(current, neighborKey, directionIndex, terrainType)) return;
-        visited.add(neighborKey);
-        stack.push(neighborKey);
-      });
-    }
-
-    best = Math.max(best, size);
+  function makeSet(coordKey) {
+    parents.set(coordKey, coordKey);
+    sizes.set(coordKey, 1);
   }
 
+  function find(coordKey) {
+    let root = coordKey;
+    while (parents.get(root) !== root) root = parents.get(root);
+
+    let current = coordKey;
+    while (parents.get(current) !== current) {
+      const next = parents.get(current);
+      parents.set(current, root);
+      current = next;
+    }
+
+    return root;
+  }
+
+  function union(a, b) {
+    const rootA = find(a);
+    const rootB = find(b);
+    if (rootA === rootB) return;
+
+    const sizeA = sizes.get(rootA) ?? 1;
+    const sizeB = sizes.get(rootB) ?? 1;
+
+    if (sizeA < sizeB) {
+      parents.set(rootA, rootB);
+      sizes.set(rootB, sizeA + sizeB);
+      return;
+    }
+
+    parents.set(rootB, rootA);
+    sizes.set(rootA, sizeA + sizeB);
+  }
+
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (tileContainsTerrain(tile, terrainType)) makeSet(coordKey);
+  }
+
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (!tileContainsTerrain(tile, terrainType)) continue;
+
+    const { q, r } = parseKey(coordKey);
+    axialDirections.forEach(([dq, dr], directionIndex) => {
+      const neighborKey = key(q + dq, r + dr);
+      const neighborTile = state.tiles.get(neighborKey);
+      if (!neighborTile || !tileContainsTerrain(neighborTile, terrainType)) return;
+      if (!terrainEdgeMatches(tile, neighborTile, directionIndex, terrainType)) return;
+      union(coordKey, neighborKey);
+    });
+  }
+
+  const groups = new Map();
+  for (const coordKey of parents.keys()) {
+    const root = find(coordKey);
+    if (!groups.has(root)) groups.set(root, []);
+    groups.get(root).push(coordKey);
+  }
+
+  return groups;
+}
+
+function largestConnectedTerrainGroup(terrainType) {
+  const groups = buildTerrainRegionGroups(terrainType);
+  let best = 0;
+  for (const group of groups.values()) best = Math.max(best, group.length);
   return best;
 }
 
