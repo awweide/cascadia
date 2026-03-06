@@ -121,9 +121,9 @@ button {
 .hex.filled { color: #142; font-weight: 600; }
 .hex.starter { outline: 2px solid #5d8fbf; }
 
-.terrain-forest { background: #d2e9d0; }
-.terrain-river { background: #cfe8ff; }
-.terrain-mountain { background: #e3ddda; }
+.terrain-forest { background: #83a07f; }
+.terrain-river { background: #7ca3c5; }
+.terrain-mountain { background: #a6a09d; }
 .terrain-prairie { background: #f7efc3; }
 .terrain-wetland { background: #d5f1e2; }
 
@@ -134,5 +134,22 @@ button {
   text-shadow: 0 1px 0 #fff;
 }
 
-.hex-animals { font-size: 0.72rem; opacity: 0.9; display: block; background: rgb(255 255 255 / 75%); border-radius: 8px; padding: 0 0.2rem; }
+.hex-animals {
+  font-size: 0.9rem;
+  opacity: 0.96;
+  display: block;
+  line-height: 1.2;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 70%);
+}
+
+.hex.preview {
+  opacity: 0.75;
+  border-style: solid;
+  border-color: #3c4d66;
+  box-shadow: 0 0 0 2px rgb(60 77 102 / 28%);
+}
+
+.hex.token-preview .hex-token {
+  opacity: 0.65;
+}
 .status { margin: 1rem 0; font-weight: 600; }
