@@ -191,3 +191,20 @@ button {
   opacity: 0.65;
 }
 .status { margin: 0.35rem 0 0; font-weight: 600; }
+
+.hex-animals.token-count-3 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.04rem;
+  line-height: 1;
+}
+
+.hex-animals.token-count-3 .token-top {
+  display: block;
+}
+
+.hex-animals.token-count-3 .token-bottom {
+  display: block;
+  letter-spacing: 0.1em;
+}
