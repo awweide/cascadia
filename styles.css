@@ -33,7 +33,22 @@ h1, h2 { margin: 0.4rem 0; }
 
 .top-panel { display: grid; grid-template-columns: minmax(240px, 1fr) 2fr; gap: 1rem; align-items: flex-start; }
 .status-summary p { margin: 0.2rem 0; }
-.controls { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.control-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.control-group-left { justify-content: flex-start; }
+.control-group-center { justify-content: center; }
+.control-group-right { justify-content: flex-end; }
 
 button {
   border: none;
@@ -44,6 +59,12 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  background: #9aa3ad;
+  color: #e8edf2;
+  cursor: not-allowed;
+}
+
 .score-breakdown {
   margin-top: 0.1rem;
   font-size: 0.9rem;
@@ -51,7 +72,7 @@ button {
 
 .score-columns {
   display: grid;
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, minmax(140px, 1fr));
   gap: 0.8rem;
 }
 
@@ -67,13 +88,8 @@ button {
   padding-left: 1.1rem;
 }
 
-.score-subtotal,
-.score-total {
+.score-subtotal {
   margin: 0.18rem 0;
-}
-
-.score-total {
-  font-weight: 700;
 }
 
 .market-tiles {
@@ -102,17 +118,6 @@ button {
   width: 100%;
   display: flex;
   justify-content: center;
-}
-
-.bonus-badge {
-  display: inline-block;
-  margin-top: 0.25rem;
-  font-size: 0.72rem;
-  background: #fdf4cc;
-  color: #765500;
-  border: 1px solid #e8d58f;
-  border-radius: 999px;
-  padding: 0.1rem 0.45rem;
 }
 
 .token-row {
@@ -278,5 +283,16 @@ button {
 
   .score-columns {
     grid-template-columns: 1fr;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .control-group,
+  .control-group-left,
+  .control-group-center,
+  .control-group-right {
+    justify-content: flex-start;
   }
 }

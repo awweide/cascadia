@@ -16,7 +16,7 @@
           <p>Turn: <span id="turn-counter">1 / 20</span></p>
           <p>Phase: <span id="phase-label">Pick a pair</span></p>
           <p>Current Score: <span id="final-score">0</span></p>
-          <p>Nature Tokens: <span id="nature-token-count">0</span></p>
+          <p>Stars: <span id="nature-token-count">0</span></p>
           <p id="status" class="status" aria-live="polite">Choose a pair to begin.</p>
         </div>
         <div id="score-breakdown" class="score-breakdown"></div>
@@ -24,20 +24,26 @@
 
       <section class="market" aria-label="Pair Market">
         <h2>Pair Market</h2>
-        <p>Select one pair, or spend nature to combine a tile and token from different pairs. Place the tile first (rotate if needed), then place its token.</p>
+        <p>Select one pair, or spend a star to combine a tile and token from different pairs. Place the tile first (rotate if needed), then place its token.</p>
         <div id="market-tiles" class="market-tiles"></div>
       </section>
 
       <section class="controls-panel" aria-label="Game controls">
         <div class="controls">
-          <button id="rotate-left-btn" type="button">Rotate ⟲ (Z)</button>
-          <button id="rotate-right-btn" type="button">Rotate ⟳ (X)</button>
-          <button id="toggle-split-pick-btn" type="button">Use Nature for Mixed Pair</button>
-          <button id="reroll-selected-tokens-btn" type="button">Reroll All Tokens (1 Nature)</button>
-          <button id="reroll-triple-btn" type="button" hidden>Reroll Triple Token Set</button>
-          <button id="reset-turn-btn" type="button">Reset Turn</button>
-          <button id="confirm-discard-btn" type="button" hidden>Confirm Discard</button>
-          <button id="restart-btn" type="button">Restart</button>
+          <div class="control-group control-group-left">
+            <button id="rotate-left-btn" type="button">Rotate ⟲ (Z)</button>
+            <button id="rotate-right-btn" type="button">Rotate ⟳ (X)</button>
+            <button id="confirm-discard-btn" type="button">Confirm Discard</button>
+          </div>
+          <div class="control-group control-group-center">
+            <button id="toggle-split-pick-btn" type="button">−1 ★ Mixed Pair</button>
+            <button id="reroll-selected-tokens-btn" type="button">−1 ★ Refresh Tokens</button>
+            <button id="reroll-triple-btn" type="button">Reroll 3-of-a-Kind</button>
+          </div>
+          <div class="control-group control-group-right">
+            <button id="reset-turn-btn" type="button">Reset Turn</button>
+            <button id="restart-btn" type="button">Restart Game</button>
+          </div>
         </div>
       </section>
 

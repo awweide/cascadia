@@ -363,7 +363,7 @@ function performOptionalTripleRefresh() {
 function spendNatureToken(reason) {
   if (state.natureTokens <= 0) return false;
   state.natureTokens -= 1;
-  addEventLog(`Spent 1 nature token (${reason}).`);
+  addEventLog(`Spent 1 star (${reason}).`);
   return true;
 }
 
@@ -496,8 +496,8 @@ function renderBoard() {
       }
 
       if (tile.kind === "single") {
-        const bonusText = tile.bonusOnToken ? " | +1 if token placed" : "";
-        hex.title = `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}${bonusText}`;
+        const starText = tile.bonusOnToken ? " | star available" : "";
+        hex.title = `${tile.terrain} | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}${starText}`;
       } else {
         hex.title = `${tile.terrainA}/${tile.terrainB} (rot ${tile.rotation * 60}°) | printed: ${tile.printedAnimals.join(", ")} | token: ${tile.token ?? "none"}`;
       }
@@ -535,8 +535,7 @@ function printedAnimalsMarkup(printedAnimals) {
 function marketTileHexHTML(pair) {
   const tile = tileFromDraft(pair.tileDraft, 0);
   const bg = tileBackground(tile);
-  const bonusBadge = pair.tileDraft.bonusOnToken ? '<span class="bonus-badge">+1 bonus when token placed</span>' : "";
-  return `<div class="hex market-hex" style="background:${bg};">${hexTileCenterMarkup(tile)}</div>${bonusBadge}`;
+  return `<div class="hex market-hex" style="background:${bg};">${hexTileCenterMarkup(tile)}</div>`;
 }
 
 function clearMixedSelection() {
@@ -969,9 +968,8 @@ function renderScoreBreakdown(score) {
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
       </div>
       <div class="score-column">
-        <strong>Totals</strong>
-        <p class="score-subtotal">Nature token points: ${score.natureTokenPoints}</p>
-        <p class="score-total">Total: ${score.total}</p>
+        <strong>Stars</strong>
+        <p class="score-subtotal">Stars: ${score.natureTokenPoints}</p>
       </div>
     </div>
   `;
@@ -1057,7 +1055,7 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
     state.phase = "gameOver";
     state.score = computeScoreBreakdown();
     setStatus(
-      `Game over! Terrain ${state.score.terrainTotal} + Animal ${state.score.animalTotal} + Nature ${state.score.natureTokenPoints} = ${state.score.total}.`
+      `Game over! Terrain ${state.score.terrainTotal} + Animal ${state.score.animalTotal} + Stars ${state.score.natureTokenPoints} = ${state.score.total}.`
     );
     addEventLog(`Game ended with total score ${state.score.total}.`);
   } else {
@@ -1148,8 +1146,8 @@ function onBoardHexClick(event) {
     if (tile.bonusOnToken) {
       state.natureTokens += 1;
       tile.bonusOnToken = false;
-      setStatus(`Placed token ${state.selectedPair.token} and gained 1 nature token.`);
-      addEventLog(`Gained 1 nature token by placing on a single-terrain bonus tile.`);
+      setStatus(`Placed token ${state.selectedPair.token} and gained 1 star.`);
+      addEventLog(`Gained 1 star by placing on a single-terrain hex.`);
     }
     finishTurn(state.selectedPair, state.selectedPair.token, null);
   }
@@ -1181,14 +1179,23 @@ function render() {
   renderScoreBreakdown(score);
 
   const tripleAnimal = availableTripleTokenAnimal();
-  rerollTripleBtn.hidden = !tripleAnimal || state.phase !== "pickPair" || state.gameOver;
-  rerollTripleBtn.textContent = tripleAnimal ? `Reroll Triple ${animalNames[tripleAnimal]} Tokens` : "Reroll Triple Token Set";
+  rerollTripleBtn.disabled = state.gameOver || state.phase !== "pickPair" || !tripleAnimal;
+  rerollTripleBtn.textContent = tripleAnimal ? `Reroll 3 ${animalNames[tripleAnimal]}` : "Reroll 3-of-a-Kind";
+
+  const canRotate =
+    !state.gameOver &&
+    state.phase === "placeTile" &&
+    state.selectedPair &&
+    state.selectedPair.tileDraft.kind === "split";
+  rotateLeftBtn.disabled = !canRotate;
+  rotateRightBtn.disabled = !canRotate;
 
   toggleSplitPickBtn.disabled = state.gameOver || state.phase !== "pickPair" || state.natureTokens <= 0;
-  toggleSplitPickBtn.textContent = state.useNatureForMixedPair ? "Cancel Mixed Pair" : "Use Nature for Mixed Pair";
+  toggleSplitPickBtn.textContent = state.useNatureForMixedPair ? "Cancel Mixed Pair" : "−1 ★ Mixed Pair";
   rerollSelectedTokensBtn.disabled = state.gameOver || state.phase !== "pickPair" || state.natureTokens <= 0;
+  rerollSelectedTokensBtn.textContent = "−1 ★ Refresh Tokens";
 
-  confirmDiscardBtn.hidden = state.phase !== "confirmDiscard";
+  confirmDiscardBtn.disabled = state.phase !== "confirmDiscard";
   resetTurnBtn.disabled = state.gameOver || !state.turnStartSnapshot;
 
   renderMarket();
@@ -1247,7 +1254,7 @@ toggleSplitPickBtn.addEventListener("click", () => {
   }
 
   if (!spendNatureToken("enable mixed pair selection")) {
-    setStatus("Not enough nature tokens.");
+    setStatus("Not enough stars.");
     render();
     return;
   }
@@ -1262,7 +1269,7 @@ toggleSplitPickBtn.addEventListener("click", () => {
 rerollSelectedTokensBtn.addEventListener("click", () => {
   if (state.gameOver || state.phase !== "pickPair") return;
   if (!spendNatureToken("reroll all market tokens")) {
-    setStatus("Not enough nature tokens.");
+    setStatus("Not enough stars.");
     render();
     return;
   }
@@ -1276,7 +1283,7 @@ rerollSelectedTokensBtn.addEventListener("click", () => {
     addEventLog("Quad-token market refresh triggered after reroll.");
   }
 
-  setStatus("Spent 1 nature token to reroll all market tokens.");
+  setStatus("Spent 1 star to refresh all market tokens.");
   render();
 });
 
