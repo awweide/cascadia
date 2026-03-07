@@ -61,6 +61,7 @@ const state = {
   useNatureForMixedPair: false,
   mixedSelection: { tileIndex: null, tokenIndex: null },
   eventLog: [],
+  statusMessage: "",
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
@@ -79,6 +80,7 @@ const rerollTripleBtn = document.getElementById("reroll-triple-btn");
 const resetTurnBtn = document.getElementById("reset-turn-btn");
 const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
 const eventLogEl = document.getElementById("event-log");
+const floatingStatusBarEl = document.getElementById("floating-status-bar");
 
 function key(q, r) {
   return `${q},${r}`;
@@ -292,7 +294,13 @@ function removeLeftmostMarketPair() {
 }
 
 function setStatus(message) {
+  state.statusMessage = message;
   statusEl.textContent = message;
+}
+
+function floatingStatusText() {
+  if (state.gameOver) return state.statusMessage;
+  return `Turn ${Math.min(state.turn, state.maxTurns)}/${state.maxTurns}: ${state.statusMessage}`;
 }
 
 function addEventLog(message) {
@@ -1202,6 +1210,7 @@ function render() {
   renderMarket();
   renderBoard();
   renderEventLog();
+  floatingStatusBarEl.textContent = floatingStatusText();
 }
 
 function restartGame() {
