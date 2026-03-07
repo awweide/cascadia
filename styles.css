@@ -72,7 +72,7 @@ button:disabled {
 
 .score-columns {
   display: grid;
-  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
   gap: 0.8rem;
 }
 
@@ -197,7 +197,7 @@ button:disabled {
 
 .hex-star {
   grid-area: 1 / 1;
-  font-size: 2.2rem;
+  font-size: 3.7rem;
   line-height: 1;
   opacity: 0.9;
   z-index: 1;

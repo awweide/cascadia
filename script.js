@@ -971,10 +971,7 @@ function renderScoreBreakdown(score) {
         <strong>Animal contributions</strong>
         <ul>${animalItems}</ul>
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
-      </div>
-      <div class="score-column">
-        <strong>Stars</strong>
-        <p class="score-subtotal">Stars: ${score.natureTokenPoints}</p>
+        <p class="score-subtotal">Stars bonus: ${score.natureTokenPoints}</p>
       </div>
     </div>
   `;
