@@ -85,6 +85,8 @@ button {
 }
 
 .pair.selected { border-color: var(--selected); box-shadow: 0 0 0 2px rgb(255 209 102 / 50%); }
+.pair.selected-tile { border-color: #6f9fd8; box-shadow: 0 0 0 2px rgb(111 159 216 / 40%); }
+.pair.selected-token { outline: 2px dashed #2f7a5f; }
 
 .pair-type {
   font-size: 0.75rem;
@@ -207,4 +209,28 @@ button {
 .hex-animals.token-count-3 .token-bottom {
   display: block;
   letter-spacing: 0.1em;
+}
+
+
+.event-log-section {
+  margin-top: 1rem;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 8%);
+}
+
+.event-log {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #d5dce6;
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  background: #fbfcfd;
+}
+
+.event-entry {
+  margin: 0.2rem 0;
+  font-size: 0.88rem;
+  line-height: 1.25;
 }
