@@ -55,6 +55,8 @@ const state = {
     padding: HEX_SIZE * 2.5,
     openKeys: new Set(),
   },
+  turnStartSnapshot: null,
+  pendingDiscardReason: null,
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
@@ -67,6 +69,8 @@ const statusEl = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
 const rotateLeftBtn = document.getElementById("rotate-left-btn");
 const rotateRightBtn = document.getElementById("rotate-right-btn");
+const resetTurnBtn = document.getElementById("reset-turn-btn");
+const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
 
 function key(q, r) {
   return `${q},${r}`;
@@ -288,6 +292,7 @@ function phaseLabel() {
   if (state.gameOver) return "Game Over";
   if (state.phase === "pickPair") return "Pick a pair";
   if (state.phase === "placeTile") return `Place tile (rotation ${state.pendingRotation * 60}°)`;
+  if (state.phase === "confirmDiscard") return "Confirm discard";
   return "Place token";
 }
 
@@ -352,7 +357,7 @@ function renderBoard() {
         const previewTile = tileFromDraft(state.selectedPair.tileDraft, state.pendingRotation);
         hex.classList.add("preview");
         hex.style.background = tileBackground(previewTile);
-        hex.innerHTML = `<span class="hex-animals">${previewTile.printedAnimals.join(" ")}</span>`;
+        hex.innerHTML = printedAnimalsMarkup(previewTile.printedAnimals);
       } else {
         hex.classList.add("open");
         hex.textContent = "+";
@@ -370,7 +375,7 @@ function renderBoard() {
         hex.classList.add("token-preview");
         hex.innerHTML = `<span class="hex-token">${state.selectedPair.token}</span>`;
       } else {
-        hex.innerHTML = `<span class="hex-animals">${tile.printedAnimals.join(" ")}</span>`;
+        hex.innerHTML = printedAnimalsMarkup(tile.printedAnimals);
       }
 
       if (tile.kind === "single") {
@@ -396,11 +401,25 @@ function renderBoard() {
   });
 }
 
+
+function printedAnimalsMarkup(printedAnimals) {
+  if (printedAnimals.length !== 3) {
+    return `<span class="hex-animals token-count-${printedAnimals.length}">${printedAnimals.join(" ")}</span>`;
+  }
+
+  return `
+    <span class="hex-animals token-count-3" aria-label="${printedAnimals.join(" ")}">
+      <span class="token-top">${printedAnimals[0]}</span>
+      <span class="token-bottom">${printedAnimals[1]} ${printedAnimals[2]}</span>
+    </span>
+  `;
+}
+
 function marketTileHexHTML(pair) {
   const tile = tileFromDraft(pair.tileDraft, 0);
   const bg = tileBackground(tile);
   const bonusBadge = pair.tileDraft.bonusOnToken ? '<span class="bonus-badge">+1 bonus when token placed</span>' : "";
-  return `<div class="hex market-hex" style="background:${bg};"><span class="hex-animals">${pair.tileDraft.printedAnimals.join(" ")}</span></div>${bonusBadge}`;
+  return `<div class="hex market-hex" style="background:${bg};">${printedAnimalsMarkup(pair.tileDraft.printedAnimals)}</div>${bonusBadge}`;
 }
 
 function renderMarket() {
@@ -782,6 +801,56 @@ function renderScoreBreakdown(score) {
   `;
 }
 
+
+function copyPair(pair) {
+  return {
+    tileDraft: { ...pair.tileDraft, printedAnimals: [...pair.tileDraft.printedAnimals] },
+    token: pair.token,
+  };
+}
+
+function copyTile(tile) {
+  return {
+    ...tile,
+    printedAnimals: [...tile.printedAnimals],
+    terrainsPresent: [...tile.terrainsPresent],
+    edges: [...tile.edges],
+  };
+}
+
+function snapshotTurnStart() {
+  state.turnStartSnapshot = {
+    tiles: new Map(Array.from(state.tiles.entries(), ([coordKey, tile]) => [coordKey, copyTile(tile)])),
+    market: state.market.map(copyPair),
+    selectedPairIndex: state.selectedPairIndex,
+    selectedPair: state.selectedPair ? copyPair(state.selectedPair) : null,
+    pendingRotation: state.pendingRotation,
+    phase: state.phase,
+    turn: state.turn,
+    gameOver: state.gameOver,
+    pendingDiscardReason: state.pendingDiscardReason,
+  };
+}
+
+function resetToTurnStart() {
+  if (!state.turnStartSnapshot || state.gameOver) return;
+
+  const snapshot = state.turnStartSnapshot;
+  state.tiles = new Map(Array.from(snapshot.tiles.entries(), ([coordKey, tile]) => [coordKey, copyTile(tile)]));
+  state.market = snapshot.market.map(copyPair);
+  state.selectedPairIndex = snapshot.selectedPairIndex;
+  state.selectedPair = snapshot.selectedPair ? copyPair(snapshot.selectedPair) : null;
+  state.pendingRotation = snapshot.pendingRotation;
+  state.phase = snapshot.phase;
+  state.turn = snapshot.turn;
+  state.gameOver = snapshot.gameOver;
+  state.pendingDiscardReason = snapshot.pendingDiscardReason;
+  state.hoverCoordKey = null;
+
+  setStatus("Turn reset to start. Pick a pair, place tile first, then token.");
+  render();
+}
+
 function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   removePickedMarketPair(chosenPair);
   const leftmostDiscard = removeLeftmostMarketPair();
@@ -812,6 +881,8 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   state.selectedPairIndex = null;
   state.pendingRotation = 0;
   state.hoverCoordKey = null;
+  state.pendingDiscardReason = null;
+  if (!state.gameOver) snapshotTurnStart();
   render();
 }
 
@@ -847,7 +918,10 @@ function onBoardHexClick(event) {
     state.phase = "placeToken";
 
     if (!canPlaceTokenAnywhere(state.selectedPair.token)) {
-      finishTurn(state.selectedPair, null, "no legal tile for token");
+      state.pendingDiscardReason = "no legal tile for token";
+      state.phase = "confirmDiscard";
+      setStatus(`Tile placed. Token ${state.selectedPair.token} has no legal placement. Confirm discard to finish turn.`);
+      render();
       return;
     }
 
@@ -898,6 +972,8 @@ function render() {
   phaseLabelEl.textContent = phaseLabel();
   finalScoreEl.textContent = String(score.total);
   renderScoreBreakdown(score);
+  confirmDiscardBtn.hidden = state.phase !== "confirmDiscard";
+  resetTurnBtn.disabled = state.gameOver || !state.turnStartSnapshot;
   renderMarket();
   renderBoard();
 }
@@ -915,12 +991,19 @@ function restartGame() {
   state.gameOver = false;
   state.score = computeScoreBreakdown();
   state.hoverCoordKey = null;
+  state.pendingDiscardReason = null;
 
+  snapshotTurnStart();
   setStatus("New game started. Pick a pair, place tile first, then token.");
   render();
 }
 
 restartBtn.addEventListener("click", restartGame);
+resetTurnBtn.addEventListener("click", resetToTurnStart);
+confirmDiscardBtn.addEventListener("click", () => {
+  if (state.phase !== "confirmDiscard" || !state.selectedPair) return;
+  finishTurn(state.selectedPair, null, state.pendingDiscardReason ?? "no legal tile for token");
+});
 rotateLeftBtn.addEventListener("click", () => rotatePending(-1));
 rotateRightBtn.addEventListener("click", () => rotatePending(1));
 
