@@ -223,7 +223,7 @@ function placeStarterTriangle() {
         kind: "single",
         terrain: "forest",
         printedAnimals: ["🦌"],
-        bonusOnToken: false,
+        bonusOnToken: true,
       },
       token: null,
       rotation: 0,
@@ -392,6 +392,40 @@ function tileBackground(tile) {
   return `conic-gradient(from ${angle}deg, ${cA} 0deg 180deg, ${cB} 180deg 360deg)`;
 }
 
+function darkenHexColor(colorHex, factor = 0.38) {
+  const hex = colorHex.replace("#", "");
+  const parse = (start) => Number.parseInt(hex.slice(start, start + 2), 16);
+  const toHex = (value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0");
+  const r = Math.round(parse(0) * (1 - factor));
+  const g = Math.round(parse(2) * (1 - factor));
+  const b = Math.round(parse(4) * (1 - factor));
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function baseTerrainForCenterColor(tile) {
+  if (tile.kind === "single") return tile.terrain;
+  return tile.terrainA;
+}
+
+function hexTileCenterMarkup(tile, tokenOverride = null) {
+  const tokenText = tokenOverride ?? tile.token;
+  const starColor = darkenHexColor(terrainColors[baseTerrainForCenterColor(tile)]);
+  const starMarkup = tile.bonusOnToken ? `<span class="hex-star" style="color:${starColor};">★</span>` : "";
+  const printedMarkup = printedAnimalsMarkup(tile.printedAnimals);
+  const tokenMarkup = tokenText ? `<span class="hex-token">${tokenText}</span>` : "";
+  return `<span class="hex-center">${starMarkup}${printedMarkup}${tokenMarkup}</span>`;
+}
+
+function eligibleTokenPlacementKeys() {
+  if (state.phase !== "placeToken" || !state.selectedPair) return new Set();
+
+  const eligible = new Set();
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (!tile.token && tile.printedAnimals.includes(state.selectedPair.token)) eligible.add(coordKey);
+  }
+  return eligible;
+}
+
 function renderBoard() {
   boardEl.innerHTML = "";
 
@@ -417,6 +451,7 @@ function renderBoard() {
   boardEl.style.height = `${Math.max(380, maxY - minY + padding * 2 + HEX_SIZE)}px`;
 
   const openKeys = new Set(openPlacementKeys());
+  const tokenEligibleKeys = eligibleTokenPlacementKeys();
   state.boardLayout = { minX, minY, padding, openKeys };
 
   function drawHex(q, r, tile, isOpen) {
@@ -447,14 +482,17 @@ function renderBoard() {
       if (tile.bonusOnToken) hex.classList.add("bonus-tile");
       hex.style.background = tileBackground(tile);
 
+      if (state.phase === "placeToken" && state.selectedPair) {
+        if (tokenEligibleKeys.has(coordKey)) hex.classList.add("token-eligible");
+        else hex.classList.add("token-ineligible");
+      }
+
       const showTokenPreview = state.hoverCoordKey === coordKey && hoverTokenIsLegal(coordKey);
-      if (tile.token) {
-        hex.innerHTML = `<span class="hex-token">${tile.token}</span>`;
-      } else if (showTokenPreview) {
+      if (showTokenPreview) {
         hex.classList.add("token-preview");
-        hex.innerHTML = `<span class="hex-token">${state.selectedPair.token}</span>`;
+        hex.innerHTML = hexTileCenterMarkup(tile, state.selectedPair.token);
       } else {
-        hex.innerHTML = printedAnimalsMarkup(tile.printedAnimals);
+        hex.innerHTML = hexTileCenterMarkup(tile);
       }
 
       if (tile.kind === "single") {
@@ -498,7 +536,7 @@ function marketTileHexHTML(pair) {
   const tile = tileFromDraft(pair.tileDraft, 0);
   const bg = tileBackground(tile);
   const bonusBadge = pair.tileDraft.bonusOnToken ? '<span class="bonus-badge">+1 bonus when token placed</span>' : "";
-  return `<div class="hex market-hex" style="background:${bg};">${printedAnimalsMarkup(pair.tileDraft.printedAnimals)}</div>${bonusBadge}`;
+  return `<div class="hex market-hex" style="background:${bg};">${hexTileCenterMarkup(tile)}</div>${bonusBadge}`;
 }
 
 function clearMixedSelection() {
@@ -544,12 +582,11 @@ function renderMarket() {
     if (state.useNatureForMixedPair && state.mixedSelection.tokenIndex === index) pairEl.classList.add("selected-token");
 
     pairEl.innerHTML = `
-      <div>${marketTileHexHTML(pair)}</div>
-      <div class="token-row">
+      <div class="market-tile-row">${marketTileHexHTML(pair)}</div>
+      <div class="market-token-row token-row">
         <span>Token:</span>
         <span class="market-token pick">${pair.token}</span>
       </div>
-      <div class="pair-type">${pair.tileDraft.marketType ?? "starter"}</div>
     `;
 
     pairEl.addEventListener("click", () => {
@@ -921,19 +958,22 @@ function renderScoreBreakdown(score) {
 
   scoreBreakdownEl.innerHTML = `
     <div class="score-columns">
-      <div>
+      <div class="score-column">
         <strong>Terrain contributions</strong>
         <ul>${terrainItems}</ul>
         <p class="score-subtotal">Terrain subtotal: ${score.terrainTotal}</p>
       </div>
-      <div>
+      <div class="score-column">
         <strong>Animal contributions</strong>
         <ul>${animalItems}</ul>
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
       </div>
+      <div class="score-column">
+        <strong>Totals</strong>
+        <p class="score-subtotal">Nature token points: ${score.natureTokenPoints}</p>
+        <p class="score-total">Total: ${score.total}</p>
+      </div>
     </div>
-    <p class="score-subtotal">Nature token points: ${score.natureTokenPoints}</p>
-    <p class="score-total">Total = Terrain ${score.terrainTotal} + Animal ${score.animalTotal} + Nature ${score.natureTokenPoints} = ${score.total}</p>
   `;
 }
 
