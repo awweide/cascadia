@@ -19,7 +19,6 @@ body {
 
 .app { max-width: 1200px; margin: 0 auto; padding: 1rem 1rem 1.5rem; }
 h1, h2 { margin: 0.4rem 0; }
-.subtitle { margin-top: 0; }
 
 .app-header {
   display: flex;
@@ -49,20 +48,22 @@ h1, h2 { margin: 0.4rem 0; }
   box-shadow: 0 1px 6px rgb(0 0 0 / 8%);
 }
 
-.top-panel { display: grid; grid-template-columns: minmax(240px, 1fr) 2fr; gap: 1rem; align-items: flex-start; }
+.top-panel { display: grid; grid-template-columns: minmax(260px, 320px) 1fr; gap: 1rem; align-items: flex-start; }
 .status-summary p { margin: 0.2rem 0; }
+.status-score-line { font-weight: 600; }
 
 .market-sidebar {
   position: sticky;
   top: 1rem;
   max-height: calc(100vh - 2rem);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .market-controls {
   display: grid;
   gap: 0.4rem;
-  margin-bottom: 0.7rem;
+  margin-top: 0.7rem;
 }
 
 button {
@@ -111,6 +112,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .pair {
@@ -220,6 +223,7 @@ button:disabled {
   line-height: 1;
   opacity: 0.9;
   z-index: 1;
+  transform: translateY(-12.5%);
 }
 
 .hex-token {
@@ -251,8 +255,6 @@ button:disabled {
 .hex.token-preview .hex-token {
   opacity: 0.65;
 }
-.status { margin: 0.35rem 0 0; font-weight: 600; }
-
 .hex-animals.token-count-3 {
   display: inline-flex;
   flex-direction: column;
@@ -328,6 +330,52 @@ button:disabled {
 
 .status-actions button.hidden {
   display: none;
+}
+
+
+.info-popover {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #8a96a5;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-left: 0.28rem;
+  color: #445;
+  cursor: help;
+  background: #fff;
+}
+
+.info-popover::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.4rem);
+  transform: translateX(-50%);
+  min-width: 220px;
+  max-width: 340px;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  background: #172235;
+  color: #f5f8fc;
+  font-size: 0.77rem;
+  line-height: 1.25;
+  font-weight: 500;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 28%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  z-index: 200;
+  white-space: normal;
+}
+
+.info-popover:hover::after,
+.info-popover:focus-visible::after {
+  opacity: 1;
 }
 
 .terrain-chip {
