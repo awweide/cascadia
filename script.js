@@ -66,7 +66,6 @@ const state = {
 const turnCounterEl = document.getElementById("turn-counter");
 const phaseLabelEl = document.getElementById("phase-label");
 const finalScoreEl = document.getElementById("final-score");
-const natureTokenCountEl = document.getElementById("nature-token-count");
 const scoreBreakdownEl = document.getElementById("score-breakdown");
 const marketTilesEl = document.getElementById("market-tiles");
 const boardEl = document.getElementById("board");
@@ -402,6 +401,12 @@ function darkenHexColor(colorHex, factor = 0.38) {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+function starColorForTile(tile) {
+  const terrain = baseTerrainForCenterColor(tile);
+  const factor = terrain === "mountain" ? 0.5 : 0.38;
+  return darkenHexColor(terrainColors[terrain], factor);
+}
+
 function baseTerrainForCenterColor(tile) {
   if (tile.kind === "single") return tile.terrain;
   return tile.terrainA;
@@ -409,7 +414,7 @@ function baseTerrainForCenterColor(tile) {
 
 function hexTileCenterMarkup(tile, tokenOverride = null) {
   const tokenText = tokenOverride ?? tile.token;
-  const starColor = darkenHexColor(terrainColors[baseTerrainForCenterColor(tile)]);
+  const starColor = starColorForTile(tile);
   const starMarkup = tile.bonusOnToken ? `<span class="hex-star" style="color:${starColor};">★</span>` : "";
   const printedMarkup = printedAnimalsMarkup(tile.printedAnimals);
   const tokenMarkup = tokenText ? `<span class="hex-token">${tokenText}</span>` : "";
@@ -1175,7 +1180,6 @@ function render() {
   turnCounterEl.textContent = `${Math.min(state.turn, state.maxTurns)} / ${state.maxTurns}`;
   phaseLabelEl.textContent = phaseLabel();
   finalScoreEl.textContent = String(score.total);
-  natureTokenCountEl.textContent = String(state.natureTokens);
   renderScoreBreakdown(score);
 
   const tripleAnimal = availableTripleTokenAnimal();
