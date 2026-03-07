@@ -4,6 +4,8 @@ A mouse-based, open-ended solo Cascadia-inspired game with rotatable split hexes
 
 ## Run
 
+Run directly in browser at <https://awweide.github.io/cascadia/>
+
 Open `index.html` directly in a browser, or serve locally:
 
 ```bash
