@@ -80,7 +80,7 @@ const rerollTripleBtn = document.getElementById("reroll-triple-btn");
 const resetTurnBtn = document.getElementById("reset-turn-btn");
 const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
 const eventLogEl = document.getElementById("event-log");
-const floatingStatusBarEl = document.getElementById("floating-status-bar");
+const floatingStatusTextEl = document.getElementById("floating-status-text");
 
 function key(q, r) {
   return `${q},${r}`;
@@ -424,7 +424,7 @@ function hexTileCenterMarkup(tile, tokenOverride = null) {
   const tokenText = tokenOverride ?? tile.token;
   const starColor = starColorForTile(tile);
   const starMarkup = tile.bonusOnToken ? `<span class="hex-star" style="color:${starColor};">★</span>` : "";
-  const printedMarkup = printedAnimalsMarkup(tile.printedAnimals);
+  const printedMarkup = tokenText ? "" : printedAnimalsMarkup(tile.printedAnimals);
   const tokenMarkup = tokenText ? `<span class="hex-token">${tokenText}</span>` : "";
   return `<span class="hex-center">${starMarkup}${printedMarkup}${tokenMarkup}</span>`;
 }
@@ -962,7 +962,7 @@ function computeScoreBreakdown() {
 
 function renderScoreBreakdown(score) {
   const terrainItems = terrains
-    .map((terrain) => `<li>${terrainNames[terrain]}: ${score.terrainScores[terrain]}</li>`)
+    .map((terrain) => `<li><span class="terrain-chip" style="background:${terrainColors[terrain]};"></span>${terrainNames[terrain]}: ${score.terrainScores[terrain]}</li>`)
     .join("");
   const animalItems = animals
     .map((animal) => `<li>${animal} ${animalNames[animal]}: ${score.animalScores[animal]}</li>`)
@@ -979,12 +979,40 @@ function renderScoreBreakdown(score) {
         <strong>Animal contributions</strong>
         <ul>${animalItems}</ul>
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
-        <p class="score-subtotal">Stars bonus: ${score.natureTokenPoints}</p>
+        <p class="score-subtotal">★ Stars bonus: ${score.natureTokenPoints}</p>
       </div>
     </div>
   `;
 }
 
+
+function stableTileSnapshotEntries(tilesMap) {
+  return Array.from(tilesMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([coordKey, tile]) => [coordKey, copyTile(tile)]);
+}
+
+function turnStateHash() {
+  return JSON.stringify({
+    tiles: stableTileSnapshotEntries(state.tiles),
+    market: state.market.map(copyPair),
+    selectedPairIndex: state.selectedPairIndex,
+    selectedPair: state.selectedPair ? copyPair(state.selectedPair) : null,
+    pendingRotation: state.pendingRotation,
+    phase: state.phase,
+    turn: state.turn,
+    gameOver: state.gameOver,
+    pendingDiscardReason: state.pendingDiscardReason,
+    natureTokens: state.natureTokens,
+    useNatureForMixedPair: state.useNatureForMixedPair,
+    mixedSelection: { ...state.mixedSelection },
+  });
+}
+
+function canResetTurn() {
+  if (!state.turnStartSnapshot || state.gameOver) return false;
+  return turnStateHash() !== state.turnStartSnapshot.turnStateHash;
+}
 
 function copyPair(pair) {
   return {
@@ -1004,7 +1032,7 @@ function copyTile(tile) {
 
 function snapshotTurnStart() {
   state.turnStartSnapshot = {
-    tiles: new Map(Array.from(state.tiles.entries(), ([coordKey, tile]) => [coordKey, copyTile(tile)])),
+    tiles: new Map(stableTileSnapshotEntries(state.tiles)),
     market: state.market.map(copyPair),
     selectedPairIndex: state.selectedPairIndex,
     selectedPair: state.selectedPair ? copyPair(state.selectedPair) : null,
@@ -1017,6 +1045,7 @@ function snapshotTurnStart() {
     useNatureForMixedPair: state.useNatureForMixedPair,
     mixedSelection: { ...state.mixedSelection },
     eventLog: [...state.eventLog],
+    turnStateHash: turnStateHash(),
   };
 }
 
@@ -1205,12 +1234,17 @@ function render() {
   rerollSelectedTokensBtn.textContent = "−1 ★ Refresh Tokens";
 
   confirmDiscardBtn.disabled = state.phase !== "confirmDiscard";
-  resetTurnBtn.disabled = state.gameOver || !state.turnStartSnapshot;
+  resetTurnBtn.disabled = !canResetTurn();
+
+  const showRotateControls = !rotateLeftBtn.disabled;
+  rotateLeftBtn.classList.toggle("hidden", !showRotateControls);
+  rotateRightBtn.classList.toggle("hidden", !showRotateControls);
+  confirmDiscardBtn.classList.toggle("hidden", state.phase !== "confirmDiscard");
 
   renderMarket();
   renderBoard();
   renderEventLog();
-  floatingStatusBarEl.textContent = floatingStatusText();
+  floatingStatusTextEl.textContent = floatingStatusText();
 }
 
 function restartGame() {
