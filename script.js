@@ -57,11 +57,16 @@ const state = {
   },
   turnStartSnapshot: null,
   pendingDiscardReason: null,
+  natureTokens: 0,
+  useNatureForMixedPair: false,
+  mixedSelection: { tileIndex: null, tokenIndex: null },
+  eventLog: [],
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
 const phaseLabelEl = document.getElementById("phase-label");
 const finalScoreEl = document.getElementById("final-score");
+const natureTokenCountEl = document.getElementById("nature-token-count");
 const scoreBreakdownEl = document.getElementById("score-breakdown");
 const marketTilesEl = document.getElementById("market-tiles");
 const boardEl = document.getElementById("board");
@@ -69,8 +74,12 @@ const statusEl = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
 const rotateLeftBtn = document.getElementById("rotate-left-btn");
 const rotateRightBtn = document.getElementById("rotate-right-btn");
+const toggleSplitPickBtn = document.getElementById("toggle-split-pick-btn");
+const rerollSelectedTokensBtn = document.getElementById("reroll-selected-tokens-btn");
+const rerollTripleBtn = document.getElementById("reroll-triple-btn");
 const resetTurnBtn = document.getElementById("reset-turn-btn");
 const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
+const eventLogEl = document.getElementById("event-log");
 
 function key(q, r) {
   return `${q},${r}`;
@@ -261,19 +270,18 @@ function canPlaceTokenAnywhere(tokenAnimal) {
 }
 
 function removePickedMarketPair(chosenPair) {
-  if (state.selectedPairIndex !== null && state.selectedPairIndex >= 0 && state.selectedPairIndex < state.market.length) {
-    const [removed] = state.market.splice(state.selectedPairIndex, 1);
-    if (removed === chosenPair) return removed;
-    const fallbackIndex = state.market.indexOf(chosenPair);
-    if (fallbackIndex >= 0) {
-      const [fallbackRemoved] = state.market.splice(fallbackIndex, 1);
-      return fallbackRemoved;
-    }
-    return removed;
+  if (!chosenPair) return null;
+
+  if (chosenPair.isMixedPair && chosenPair.tileIndex !== chosenPair.tokenIndex) {
+    const maxIndex = Math.max(chosenPair.tileIndex, chosenPair.tokenIndex);
+    const minIndex = Math.min(chosenPair.tileIndex, chosenPair.tokenIndex);
+    const removedA = state.market.splice(maxIndex, 1)[0] ?? null;
+    const removedB = state.market.splice(minIndex, 1)[0] ?? null;
+    return [removedA, removedB];
   }
 
-  const index = state.market.indexOf(chosenPair);
-  if (index < 0) return null;
+  const index = chosenPair.tileIndex ?? state.selectedPairIndex;
+  if (index === null || index < 0 || index >= state.market.length) return null;
   const [removed] = state.market.splice(index, 1);
   return removed;
 }
@@ -286,6 +294,77 @@ function removeLeftmostMarketPair() {
 
 function setStatus(message) {
   statusEl.textContent = message;
+}
+
+function addEventLog(message) {
+  const turnLabel = state.gameOver ? "Game Over" : `Turn ${state.turn}`;
+  state.eventLog.push(`[${turnLabel}] ${message}`);
+}
+
+function renderEventLog() {
+  eventLogEl.innerHTML = state.eventLog
+    .map((entry) => `<p class="event-entry">${entry}</p>`)
+    .join("");
+  eventLogEl.scrollTop = eventLogEl.scrollHeight;
+}
+
+function countMarketTokenKinds() {
+  const counts = new Map();
+  state.market.forEach((pair) => {
+    counts.set(pair.token, (counts.get(pair.token) ?? 0) + 1);
+  });
+  return counts;
+}
+
+function replaceTokenAtIndex(index) {
+  if (index < 0 || index >= state.market.length) return;
+  const oldToken = state.market[index].token;
+  state.market[index].token = randomItem(animals);
+  addEventLog(`Market token ${oldToken} at slot ${index + 1} rerolled to ${state.market[index].token}.`);
+}
+
+function forceMarketQuadRefresh() {
+  const counts = countMarketTokenKinds();
+  for (const [animal, count] of counts.entries()) {
+    if (count >= 4) {
+      const affected = [];
+      state.market.forEach((pair, index) => {
+        if (pair.token === animal) affected.push(index);
+      });
+      affected.forEach((index) => replaceTokenAtIndex(index));
+      addEventLog(`Four ${animal} tokens appeared, so all were automatically discarded and replaced.`);
+      return true;
+    }
+  }
+  return false;
+}
+
+function availableTripleTokenAnimal() {
+  const counts = countMarketTokenKinds();
+  for (const [animal, count] of counts.entries()) {
+    if (count === 3) return animal;
+  }
+  return null;
+}
+
+function performOptionalTripleRefresh() {
+  const animal = availableTripleTokenAnimal();
+  if (!animal) return false;
+
+  const affected = [];
+  state.market.forEach((pair, index) => {
+    if (pair.token === animal) affected.push(index);
+  });
+  affected.forEach((index) => replaceTokenAtIndex(index));
+  addEventLog(`Player chose to refresh triple ${animal} market tokens.`);
+  return true;
+}
+
+function spendNatureToken(reason) {
+  if (state.natureTokens <= 0) return false;
+  state.natureTokens -= 1;
+  addEventLog(`Spent 1 nature token (${reason}).`);
+  return true;
 }
 
 function phaseLabel() {
@@ -422,13 +501,47 @@ function marketTileHexHTML(pair) {
   return `<div class="hex market-hex" style="background:${bg};">${printedAnimalsMarkup(pair.tileDraft.printedAnimals)}</div>${bonusBadge}`;
 }
 
+function clearMixedSelection() {
+  state.mixedSelection.tileIndex = null;
+  state.mixedSelection.tokenIndex = null;
+}
+
+function currentChosenPair() {
+  if (state.useNatureForMixedPair) {
+    const tileIndex = state.mixedSelection.tileIndex;
+    const tokenIndex = state.mixedSelection.tokenIndex;
+    if (tileIndex === null || tokenIndex === null) return null;
+    return {
+      tileDraft: state.market[tileIndex].tileDraft,
+      token: state.market[tokenIndex].token,
+      tileIndex,
+      tokenIndex,
+      isMixedPair: tileIndex !== tokenIndex,
+    };
+  }
+
+  if (state.selectedPairIndex === null) return null;
+  const pair = state.market[state.selectedPairIndex];
+  if (!pair) return null;
+  return {
+    tileDraft: pair.tileDraft,
+    token: pair.token,
+    tileIndex: state.selectedPairIndex,
+    tokenIndex: state.selectedPairIndex,
+    isMixedPair: false,
+  };
+}
+
 function renderMarket() {
   marketTilesEl.innerHTML = "";
   state.market.forEach((pair, index) => {
     const pairEl = document.createElement("button");
     pairEl.type = "button";
     pairEl.className = "pair";
-    if (state.selectedPairIndex === index) pairEl.classList.add("selected");
+
+    if (!state.useNatureForMixedPair && state.selectedPairIndex === index) pairEl.classList.add("selected");
+    if (state.useNatureForMixedPair && state.mixedSelection.tileIndex === index) pairEl.classList.add("selected-tile");
+    if (state.useNatureForMixedPair && state.mixedSelection.tokenIndex === index) pairEl.classList.add("selected-token");
 
     pairEl.innerHTML = `
       <div>${marketTileHexHTML(pair)}</div>
@@ -445,10 +558,40 @@ function renderMarket() {
         setStatus("Finish placing your current tile/token before picking a new pair.");
         return;
       }
+
+      if (state.useNatureForMixedPair) {
+        if (state.mixedSelection.tileIndex === null) {
+          state.mixedSelection.tileIndex = index;
+          setStatus("Mixed pick mode: selected tile source. Now select any token source pair.");
+        } else if (state.mixedSelection.tokenIndex === null) {
+          state.mixedSelection.tokenIndex = index;
+          const chosen = currentChosenPair();
+          state.selectedPair = chosen;
+          state.pendingRotation = 0;
+          state.phase = "placeTile";
+          setStatus(`Mixed pair selected. Place tile and then token ${chosen.token}.`);
+          addEventLog(`Selected mixed pair: tile from slot ${chosen.tileIndex + 1}, token from slot ${chosen.tokenIndex + 1}.`);
+        } else {
+          clearMixedSelection();
+          state.mixedSelection.tileIndex = index;
+          state.selectedPair = null;
+          setStatus("Mixed pick mode reset. Tile source selected again.");
+        }
+        render();
+        return;
+      }
+
       state.selectedPairIndex = index;
-      state.selectedPair = state.market[index];
+      state.selectedPair = {
+        tileDraft: state.market[index].tileDraft,
+        token: state.market[index].token,
+        tileIndex: index,
+        tokenIndex: index,
+        isMixedPair: false,
+      };
       state.pendingRotation = 0;
       state.phase = "placeTile";
+      addEventLog(`Selected market pair from slot ${index + 1}.`);
       setStatus("Pair selected. Place tile on an open adjacent hex (rotate if needed).");
       render();
     });
@@ -456,6 +599,7 @@ function renderMarket() {
     marketTilesEl.appendChild(pairEl);
   });
 }
+
 
 function tileContainsTerrain(tile, terrainType) {
   return tile.terrainsPresent.includes(terrainType);
@@ -743,14 +887,6 @@ function computeAnimalScores() {
   };
 }
 
-function countBonusTilesWithTokens() {
-  let bonus = 0;
-  for (const tile of state.tiles.values()) {
-    if (tile.bonusOnToken && tile.token) bonus += 1;
-  }
-  return bonus;
-}
-
 function computeScoreBreakdown() {
   const terrainScores = {};
   const animalScores = {};
@@ -763,15 +899,15 @@ function computeScoreBreakdown() {
 
   const terrainTotal = terrains.reduce((sum, terrain) => sum + terrainScores[terrain], 0);
   const animalTotal = animals.reduce((sum, animal) => sum + animalScores[animal], 0);
-  const bonusTotal = countBonusTilesWithTokens();
+  const natureTokenPoints = state.natureTokens;
 
   return {
     terrainScores,
     animalScores,
     terrainTotal,
     animalTotal,
-    bonusTotal,
-    total: terrainTotal + animalTotal + bonusTotal,
+    natureTokenPoints,
+    total: terrainTotal + animalTotal + natureTokenPoints,
   };
 }
 
@@ -796,8 +932,8 @@ function renderScoreBreakdown(score) {
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
       </div>
     </div>
-    <p class="score-subtotal">Bonus from occupied single-terrain/single-animal market tiles: ${score.bonusTotal}</p>
-    <p class="score-total">Total = Terrain ${score.terrainTotal} + Animal ${score.animalTotal} + Bonus ${score.bonusTotal} = ${score.total}</p>
+    <p class="score-subtotal">Nature token points: ${score.natureTokenPoints}</p>
+    <p class="score-total">Total = Terrain ${score.terrainTotal} + Animal ${score.animalTotal} + Nature ${score.natureTokenPoints} = ${score.total}</p>
   `;
 }
 
@@ -829,6 +965,10 @@ function snapshotTurnStart() {
     turn: state.turn,
     gameOver: state.gameOver,
     pendingDiscardReason: state.pendingDiscardReason,
+    natureTokens: state.natureTokens,
+    useNatureForMixedPair: state.useNatureForMixedPair,
+    mixedSelection: { ...state.mixedSelection },
+    eventLog: [...state.eventLog],
   };
 }
 
@@ -845,35 +985,50 @@ function resetToTurnStart() {
   state.turn = snapshot.turn;
   state.gameOver = snapshot.gameOver;
   state.pendingDiscardReason = snapshot.pendingDiscardReason;
+  state.natureTokens = snapshot.natureTokens;
+  state.useNatureForMixedPair = snapshot.useNatureForMixedPair;
+  state.mixedSelection = { ...snapshot.mixedSelection };
+  state.eventLog = [...snapshot.eventLog];
   state.hoverCoordKey = null;
 
+  addEventLog("Turn state reset to start-of-turn snapshot.");
   setStatus("Turn reset to start. Pick a pair, place tile first, then token.");
   render();
 }
 
 function finishTurn(chosenPair, placedToken, discardedTokenReason) {
-  removePickedMarketPair(chosenPair);
+  const removed = removePickedMarketPair(chosenPair);
   const leftmostDiscard = removeLeftmostMarketPair();
   refillMarketToFour();
+
+  let forcedRefresh = false;
+  while (forceMarketQuadRefresh()) {
+    forcedRefresh = true;
+  }
+
+  if (chosenPair?.isMixedPair) {
+    addEventLog(`Mixed pick consumed two market slots (${chosenPair.tileIndex + 1} and ${chosenPair.tokenIndex + 1}).`);
+  }
+  if (leftmostDiscard) addEventLog(`Leftmost market pair token ${leftmostDiscard.token} discarded and refilled.`);
+  if (forcedRefresh) addEventLog("Mandatory quad-token refresh was applied.");
 
   if (state.turn >= state.maxTurns) {
     state.gameOver = true;
     state.phase = "gameOver";
     state.score = computeScoreBreakdown();
     setStatus(
-      `Game over! Terrain ${state.score.terrainTotal} + Animal ${state.score.animalTotal} + Bonus ${state.score.bonusTotal} = ${state.score.total}.`
+      `Game over! Terrain ${state.score.terrainTotal} + Animal ${state.score.animalTotal} + Nature ${state.score.natureTokenPoints} = ${state.score.total}.`
     );
+    addEventLog(`Game ended with total score ${state.score.total}.`);
   } else {
     state.turn += 1;
     state.phase = "pickPair";
     if (discardedTokenReason) {
-      setStatus(
-        `Placed tile. Token ${chosenPair.token} discarded (${discardedTokenReason}). Removed chosen pair and leftmost remaining pair (${leftmostDiscard ? leftmostDiscard.token : "none"}) before refill.`
-      );
+      setStatus(`Placed tile. Token ${chosenPair.token} discarded (${discardedTokenReason}).`);
+      addEventLog(`Token ${chosenPair.token} was discarded (${discardedTokenReason}).`);
     } else {
-      setStatus(
-        `Placed tile and token ${placedToken}. Removed chosen pair and leftmost remaining pair (${leftmostDiscard ? leftmostDiscard.token : "none"}) before refill.`
-      );
+      setStatus(`Placed tile and token ${placedToken}.`);
+      addEventLog(`Placed token ${placedToken}.`);
     }
   }
 
@@ -882,9 +1037,12 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   state.pendingRotation = 0;
   state.hoverCoordKey = null;
   state.pendingDiscardReason = null;
+  state.useNatureForMixedPair = false;
+  clearMixedSelection();
   if (!state.gameOver) snapshotTurnStart();
   render();
 }
+
 
 function hoverTokenIsLegal(coordKey) {
   if (state.phase !== "placeToken" || !state.selectedPair) return false;
@@ -916,6 +1074,7 @@ function onBoardHexClick(event) {
     const placedTile = tileFromDraft(state.selectedPair.tileDraft, state.pendingRotation);
     state.tiles.set(coordKey, placedTile);
     state.phase = "placeToken";
+    addEventLog(`Placed tile at (${q}, ${r}) with rotation ${state.pendingRotation * 60}°.`);
 
     if (!canPlaceTokenAnywhere(state.selectedPair.token)) {
       state.pendingDiscardReason = "no legal tile for token";
@@ -946,6 +1105,12 @@ function onBoardHexClick(event) {
     }
 
     tile.token = state.selectedPair.token;
+    if (tile.bonusOnToken) {
+      state.natureTokens += 1;
+      tile.bonusOnToken = false;
+      setStatus(`Placed token ${state.selectedPair.token} and gained 1 nature token.`);
+      addEventLog(`Gained 1 nature token by placing on a single-terrain bonus tile.`);
+    }
     finishTurn(state.selectedPair, state.selectedPair.token, null);
   }
 }
@@ -961,6 +1126,7 @@ function rotatePending(delta) {
   }
 
   state.pendingRotation = (state.pendingRotation + delta + 6) % 6;
+  addEventLog(`Adjusted pending rotation to ${state.pendingRotation * 60}°.`);
   setStatus(`Rotation set to ${state.pendingRotation * 60}° for the selected tile.`);
   render();
 }
@@ -971,11 +1137,23 @@ function render() {
   turnCounterEl.textContent = `${Math.min(state.turn, state.maxTurns)} / ${state.maxTurns}`;
   phaseLabelEl.textContent = phaseLabel();
   finalScoreEl.textContent = String(score.total);
+  natureTokenCountEl.textContent = String(state.natureTokens);
   renderScoreBreakdown(score);
+
+  const tripleAnimal = availableTripleTokenAnimal();
+  rerollTripleBtn.hidden = !tripleAnimal || state.phase !== "pickPair" || state.gameOver;
+  rerollTripleBtn.textContent = tripleAnimal ? `Reroll Triple ${animalNames[tripleAnimal]} Tokens` : "Reroll Triple Token Set";
+
+  toggleSplitPickBtn.disabled = state.gameOver || state.phase !== "pickPair" || state.natureTokens <= 0;
+  toggleSplitPickBtn.textContent = state.useNatureForMixedPair ? "Cancel Mixed Pair" : "Use Nature for Mixed Pair";
+  rerollSelectedTokensBtn.disabled = state.gameOver || state.phase !== "pickPair" || state.natureTokens <= 0;
+
   confirmDiscardBtn.hidden = state.phase !== "confirmDiscard";
   resetTurnBtn.disabled = state.gameOver || !state.turnStartSnapshot;
+
   renderMarket();
   renderBoard();
+  renderEventLog();
 }
 
 function restartGame() {
@@ -992,6 +1170,15 @@ function restartGame() {
   state.score = computeScoreBreakdown();
   state.hoverCoordKey = null;
   state.pendingDiscardReason = null;
+  state.natureTokens = 0;
+  state.useNatureForMixedPair = false;
+  clearMixedSelection();
+  state.eventLog = [];
+
+  addEventLog("New game started.");
+  while (forceMarketQuadRefresh()) {
+    addEventLog("Initial market had four matching tokens; refreshed automatically.");
+  }
 
   snapshotTurnStart();
   setStatus("New game started. Pick a pair, place tile first, then token.");
@@ -1006,6 +1193,67 @@ confirmDiscardBtn.addEventListener("click", () => {
 });
 rotateLeftBtn.addEventListener("click", () => rotatePending(-1));
 rotateRightBtn.addEventListener("click", () => rotatePending(1));
+
+toggleSplitPickBtn.addEventListener("click", () => {
+  if (state.gameOver || state.phase !== "pickPair") return;
+
+  if (state.useNatureForMixedPair) {
+    state.useNatureForMixedPair = false;
+    clearMixedSelection();
+    state.selectedPair = null;
+    setStatus("Mixed-pair mode cancelled.");
+    render();
+    return;
+  }
+
+  if (!spendNatureToken("enable mixed pair selection")) {
+    setStatus("Not enough nature tokens.");
+    render();
+    return;
+  }
+
+  state.useNatureForMixedPair = true;
+  clearMixedSelection();
+  state.selectedPair = null;
+  setStatus("Mixed-pair mode enabled. Select tile source, then token source.");
+  render();
+});
+
+rerollSelectedTokensBtn.addEventListener("click", () => {
+  if (state.gameOver || state.phase !== "pickPair") return;
+  if (!spendNatureToken("reroll all market tokens")) {
+    setStatus("Not enough nature tokens.");
+    render();
+    return;
+  }
+
+  state.market.forEach((_, index) => {
+    replaceTokenAtIndex(index);
+  });
+  addEventLog("All market tokens were rerolled while keeping the current tile hexes.");
+
+  while (forceMarketQuadRefresh()) {
+    addEventLog("Quad-token market refresh triggered after reroll.");
+  }
+
+  setStatus("Spent 1 nature token to reroll all market tokens.");
+  render();
+});
+
+rerollTripleBtn.addEventListener("click", () => {
+  if (state.gameOver || state.phase !== "pickPair") return;
+  const refreshed = performOptionalTripleRefresh();
+  if (!refreshed) {
+    setStatus("No triple token set is available to reroll.");
+    render();
+    return;
+  }
+  while (forceMarketQuadRefresh()) {
+    addEventLog("Quad-token market refresh triggered after triple refresh.");
+  }
+  setStatus("Triple token set rerolled.");
+  render();
+});
 
 document.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "z") {
