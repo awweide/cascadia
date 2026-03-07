@@ -2,7 +2,7 @@ const FULL_TURNS = 20;
 const HEX_SIZE = 54;
 
 const terrains = ["forest", "river", "mountain", "prairie", "wetland"];
-const animals = ["🦌", "🦊", "🐻", "🦅", "🐟"];
+const animals = ["🐻", "🦌", "🐟", "🦅", "🦊"];
 const terrainColors = {
   forest: "#83a07f",
   river: "#7ca3c5",
@@ -65,12 +65,11 @@ const state = {
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
-const phaseLabelEl = document.getElementById("phase-label");
-const finalScoreEl = document.getElementById("final-score");
+const starCounterEl = document.getElementById("star-counter");
+const scoreFormulaEl = document.getElementById("score-formula");
 const scoreBreakdownEl = document.getElementById("score-breakdown");
 const marketTilesEl = document.getElementById("market-tiles");
 const boardEl = document.getElementById("board");
-const statusEl = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
 const rotateLeftBtn = document.getElementById("rotate-left-btn");
 const rotateRightBtn = document.getElementById("rotate-right-btn");
@@ -295,7 +294,6 @@ function removeLeftmostMarketPair() {
 
 function setStatus(message) {
   state.statusMessage = message;
-  statusEl.textContent = message;
 }
 
 function floatingStatusText() {
@@ -374,13 +372,6 @@ function spendNatureToken(reason) {
   return true;
 }
 
-function phaseLabel() {
-  if (state.gameOver) return "Game Over";
-  if (state.phase === "pickPair") return "Pick a pair";
-  if (state.phase === "placeTile") return `Place tile (rotation ${state.pendingRotation * 60}°)`;
-  if (state.phase === "confirmDiscard") return "Confirm discard";
-  return "Place token";
-}
 
 function axialToPixel(q, r) {
   const x = HEX_SIZE * Math.sqrt(3) * (q + r / 2);
@@ -596,7 +587,6 @@ function renderMarket() {
     pairEl.innerHTML = `
       <div class="market-tile-row">${marketTileHexHTML(pair)}</div>
       <div class="market-token-row token-row">
-        <span>Token:</span>
         <span class="market-token pick">${pair.token}</span>
       </div>
     `;
@@ -964,27 +954,42 @@ function renderScoreBreakdown(score) {
   const terrainItems = terrains
     .map((terrain) => `<li><span class="terrain-chip" style="background:${terrainColors[terrain]};"></span>${terrainNames[terrain]}: ${score.terrainScores[terrain]}</li>`)
     .join("");
+
+  const animalTips = {
+    "🐻": "Score 4 11 19 27 points for 1 2 3 4+ pairs of bears (smaller or larger groups do not count).",
+    "🦌": "For each disjoint straight line of elks, score 2 5 9 13 points for 1 2 3 4 elks in the line.",
+    "🐟": "For each group of salmon where no salmon is adjacent to more than 2 other salmon, score 2 5 8 12 16 20 25 points for 1 2 3 4 5 6 7+ salmon in the group.",
+    "🦅": "Score 2 5 8 11 14 18 22 26 points for 1 2 3 4 5 6 7 8+ single hawks (larger groups do not count).",
+    "🦊": "For each fox, score 1 2 3 4 5 points for 1 2 3 4 5 different species adjacent to it.",
+  };
+
   const animalItems = animals
-    .map((animal) => `<li>${animal} ${animalNames[animal]}: ${score.animalScores[animal]}</li>`)
+    .map(
+      (animal) =>
+        `<li>${animal} ${animalNames[animal]}: ${score.animalScores[animal]}${infoTip(animalTips[animal])}</li>`
+    )
     .join("");
 
   scoreBreakdownEl.innerHTML = `
     <div class="score-columns">
       <div class="score-column">
-        <strong>Terrain contributions</strong>
+        <strong>Terrain contributions${infoTip("For each type of terrain, gain 1 type for each hex in the largest contiguous area.")}</strong>
         <ul>${terrainItems}</ul>
         <p class="score-subtotal">Terrain subtotal: ${score.terrainTotal}</p>
       </div>
       <div class="score-column">
-        <strong>Animal contributions</strong>
+        <strong>Animal contributions${infoTip("Each type of animal has a special rule for how they are scored.")}</strong>
         <ul>${animalItems}</ul>
         <p class="score-subtotal">Animal subtotal: ${score.animalTotal}</p>
-        <p class="score-subtotal">★ Stars bonus: ${score.natureTokenPoints}</p>
       </div>
     </div>
   `;
 }
 
+
+function infoTip(text) {
+  return `<span class="info-popover" tabindex="0" aria-label="Scoring explanation" data-tip="${text.replace(/"/g, "&quot;")}">?</span>`;
+}
 
 function stableTileSnapshotEntries(tilesMap) {
   return Array.from(tilesMap.entries())
@@ -1068,8 +1073,8 @@ function resetToTurnStart() {
   state.eventLog = [...snapshot.eventLog];
   state.hoverCoordKey = null;
 
-  addEventLog("Turn state reset to start-of-turn snapshot.");
-  setStatus("Turn reset to start. Pick a pair, place tile first, then token.");
+  addEventLog("Turn state reset to latest random-event checkpoint.");
+  setStatus("Turn reset to latest checkpoint.");
   render();
 }
 
@@ -1212,8 +1217,8 @@ function render() {
   const score = computeScoreBreakdown();
   state.score = score;
   turnCounterEl.textContent = `${Math.min(state.turn, state.maxTurns)} / ${state.maxTurns}`;
-  phaseLabelEl.textContent = phaseLabel();
-  finalScoreEl.textContent = String(score.total);
+  starCounterEl.textContent = String(score.natureTokenPoints);
+  scoreFormulaEl.textContent = `${score.terrainTotal} + ${score.animalTotal} + ${score.natureTokenPoints} = ${score.total}`;
   renderScoreBreakdown(score);
 
   const tripleAnimal = availableTripleTokenAnimal();
@@ -1327,6 +1332,7 @@ rerollSelectedTokensBtn.addEventListener("click", () => {
     addEventLog("Quad-token market refresh triggered after reroll.");
   }
 
+  snapshotTurnStart();
   setStatus("Spent 1 star to refresh all market tokens.");
   render();
 });
@@ -1342,6 +1348,7 @@ rerollTripleBtn.addEventListener("click", () => {
   while (forceMarketQuadRefresh()) {
     addEventLog("Quad-token market refresh triggered after triple refresh.");
   }
+  snapshotTurnStart();
   setStatus("Triple token set rerolled.");
   render();
 });
