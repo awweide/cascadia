@@ -20,7 +20,7 @@ const terrainNames = {
 };
 
 const animalNames = {
-  "🦌": "Deer",
+  "🦌": "Elk",
   "🦊": "Fox",
   "🐻": "Bear",
   "🦅": "Hawk",
@@ -522,21 +522,21 @@ function largestConnectedTerrainGroup(terrainType) {
   return best;
 }
 
-function largestConnectedAnimalGroup(animalType) {
+function buildAnimalGroups(animalType) {
   const visited = new Set();
-  let best = 0;
+  const groups = [];
 
   for (const [coordKey, tile] of state.tiles.entries()) {
     if (visited.has(coordKey)) continue;
     if (tile.token !== animalType) continue;
 
-    let size = 0;
+    const group = [];
     const stack = [coordKey];
     visited.add(coordKey);
 
     while (stack.length) {
       const current = stack.pop();
-      size += 1;
+      group.push(current);
       const { q, r } = parseKey(current);
       neighboringKeys(q, r).forEach((neighborKey) => {
         if (visited.has(neighborKey)) return;
@@ -547,10 +547,181 @@ function largestConnectedAnimalGroup(animalType) {
       });
     }
 
-    best = Math.max(best, size);
+    groups.push(group);
   }
 
-  return best;
+  return groups;
+}
+
+function animalCoordKeys(animalType) {
+  const coords = [];
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (tile.token === animalType) coords.push(coordKey);
+  }
+  return coords;
+}
+
+function cappedTierScore(count, values) {
+  if (count <= 0) return 0;
+  return values[Math.min(count, values.length) - 1];
+}
+
+function scoreBear() {
+  const groups = buildAnimalGroups("🐻");
+  const pairCount = groups.filter((group) => group.length === 2).length;
+  return cappedTierScore(pairCount, [4, 11, 19, 27]);
+}
+
+function elkLineScore(length) {
+  return cappedTierScore(length, [2, 5, 9, 13]);
+}
+
+function buildElkLineSegments(elkCoordKeys, indexByKey) {
+  const elkSet = new Set(elkCoordKeys);
+  const directionPairs = [
+    [0, 3],
+    [1, 4],
+    [2, 5],
+  ];
+  const segments = new Set();
+
+  directionPairs.forEach(([forwardIndex, backwardIndex]) => {
+    const [fdq, fdr] = axialDirections[forwardIndex];
+    const [bdq, bdr] = axialDirections[backwardIndex];
+
+    elkCoordKeys.forEach((coordKey) => {
+      const { q, r } = parseKey(coordKey);
+      const prevKey = key(q + bdq, r + bdr);
+      if (elkSet.has(prevKey)) return;
+
+      const run = [];
+      let cq = q;
+      let cr = r;
+      while (elkSet.has(key(cq, cr))) {
+        run.push(key(cq, cr));
+        cq += fdq;
+        cr += fdr;
+      }
+
+      for (let start = 0; start < run.length; start += 1) {
+        let mask = 0;
+        for (let end = start; end < run.length; end += 1) {
+          const index = indexByKey.get(run[end]);
+          mask |= 1 << index;
+          segments.add(mask);
+        }
+      }
+    });
+  });
+
+  return Array.from(segments);
+}
+
+function scoreElk() {
+  const elkCoords = animalCoordKeys("🦌");
+  if (elkCoords.length === 0) return 0;
+
+  const indexByKey = new Map(elkCoords.map((coordKey, index) => [coordKey, index]));
+  const segments = buildElkLineSegments(elkCoords, indexByKey);
+  const segmentsByIndex = elkCoords.map(() => []);
+
+  segments.forEach((segmentMask) => {
+    for (let i = 0; i < elkCoords.length; i += 1) {
+      if (segmentMask & (1 << i)) segmentsByIndex[i].push(segmentMask);
+    }
+  });
+
+  const memo = new Map();
+  const fullMask = (1 << elkCoords.length) - 1;
+
+  function best(mask) {
+    if (mask === 0) return 0;
+    if (memo.has(mask)) return memo.get(mask);
+
+    const pivotBit = mask & -mask;
+    const pivotIndex = Math.log2(pivotBit);
+    let top = 0;
+
+    segmentsByIndex[pivotIndex].forEach((segmentMask) => {
+      if ((segmentMask & mask) !== segmentMask) return;
+      const segmentLength = countBits(segmentMask);
+      const score = elkLineScore(segmentLength) + best(mask ^ segmentMask);
+      if (score > top) top = score;
+    });
+
+    memo.set(mask, top);
+    return top;
+  }
+
+  return best(fullMask);
+}
+
+function countBits(mask) {
+  let count = 0;
+  let value = mask;
+  while (value) {
+    value &= value - 1;
+    count += 1;
+  }
+  return count;
+}
+
+function scoreFox() {
+  let score = 0;
+
+  for (const [coordKey, tile] of state.tiles.entries()) {
+    if (tile.token !== "🦊") continue;
+
+    const { q, r } = parseKey(coordKey);
+    const neighborAnimals = new Set();
+    neighboringKeys(q, r).forEach((neighborKey) => {
+      const neighborTile = state.tiles.get(neighborKey);
+      if (!neighborTile || !neighborTile.token) return;
+      neighborAnimals.add(neighborTile.token);
+    });
+
+    score += cappedTierScore(neighborAnimals.size, [1, 2, 3, 4, 5]);
+  }
+
+  return score;
+}
+
+function scoreHawk() {
+  const groups = buildAnimalGroups("🦅");
+  const isolatedCount = groups.filter((group) => group.length === 1).length;
+  return cappedTierScore(isolatedCount, [2, 5, 8, 11, 14, 18, 22, 26]);
+}
+
+function scoreSalmon() {
+  const groups = buildAnimalGroups("🐟");
+  let score = 0;
+
+  groups.forEach((group) => {
+    const groupSet = new Set(group);
+    const valid = group.every((coordKey) => {
+      const { q, r } = parseKey(coordKey);
+      let adjacentFish = 0;
+      neighboringKeys(q, r).forEach((neighborKey) => {
+        if (groupSet.has(neighborKey)) adjacentFish += 1;
+      });
+      return adjacentFish >= 1 && adjacentFish <= 2;
+    });
+
+    if (!valid) return;
+    score += cappedTierScore(group.length, [2, 5, 8, 12, 16, 20, 25]);
+  });
+
+  return score;
+}
+
+function computeAnimalScores() {
+  return {
+    "🦌": scoreElk(),
+    "🦊": scoreFox(),
+    "🐻": scoreBear(),
+    "🦅": scoreHawk(),
+    "🐟": scoreSalmon(),
+  };
 }
 
 function countBonusTilesWithTokens() {
@@ -569,9 +740,7 @@ function computeScoreBreakdown() {
     terrainScores[terrain] = largestConnectedTerrainGroup(terrain);
   });
 
-  animals.forEach((animal) => {
-    animalScores[animal] = largestConnectedAnimalGroup(animal);
-  });
+  Object.assign(animalScores, computeAnimalScores());
 
   const terrainTotal = terrains.reduce((sum, terrain) => sum + terrainScores[terrain], 0);
   const animalTotal = animals.reduce((sum, animal) => sum + animalScores[animal], 0);
