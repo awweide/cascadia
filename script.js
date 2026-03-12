@@ -27,8 +27,86 @@ const animalNames = {
   "🐟": "Salmon",
 };
 
-const TILE_REFERENCE_LIST = (window.CASCADIA_DATA?.tileBag ?? []).map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
-const STARTER_TILE_SETUP = (window.CASCADIA_DATA?.starterTiles ?? []).map((starter) => ({
+function createDataFromLegacyFormat() {
+  const habitatMap = {
+    forest: "forest",
+    mountain: "mountain",
+    desert: "prairie",
+    swamp: "wetland",
+    lake: "river",
+  };
+  const wildlifeMap = {
+    bear: "🐻",
+    elk: "🦌",
+    salmon: "🐟",
+    hawk: "🦅",
+    fox: "🦊",
+  };
+
+  const normalizeWildlife = (wildlife = []) => wildlife.map((animal) => wildlifeMap[animal] ?? animal);
+  const toRotationSteps = (rotationValue = 0) => {
+    if (Number.isNaN(Number(rotationValue))) return 0;
+    return Math.round(Number(rotationValue) / 60);
+  };
+
+  const convertTile = (legacyTile, idPrefix) => {
+    const mappedHabitats = (legacyTile.habitats ?? []).map((habitat) => habitatMap[habitat] ?? habitat);
+    const printedAnimals = normalizeWildlife(legacyTile.wildlife ?? []);
+    const tileNum = legacyTile.tileNum ?? "x";
+
+    if (mappedHabitats.length <= 1) {
+      return {
+        kind: "single",
+        terrain: mappedHabitats[0],
+        printedAnimals,
+        bonusOnToken: true,
+        marketType: "single-single",
+        id: `${idPrefix}-${tileNum}`,
+      };
+    }
+
+    return {
+      kind: "split",
+      terrainA: mappedHabitats[0],
+      terrainB: mappedHabitats[1],
+      printedAnimals,
+      bonusOnToken: false,
+      marketType: null,
+      id: `${idPrefix}-${tileNum}`,
+    };
+  };
+
+  const starterSets = Array.isArray(window.startingTiles) ? window.startingTiles : [];
+  const chosenStarterSet = starterSets.length > 0 ? randomItem(starterSets) : [];
+  const starterCoords = [
+    { q: 0, r: 0 },
+    { q: 1, r: 0 },
+    { q: 0, r: 1 },
+  ];
+
+  const starterTiles = chosenStarterSet.map((starterTile, index) => {
+    const coord = starterCoords[index] ?? { q: index, r: 0 };
+    return {
+      q: coord.q,
+      r: coord.r,
+      rotation: toRotationSteps(starterTile.rotation),
+      tile: convertTile(starterTile, "starter"),
+      token: null,
+    };
+  });
+
+  const tileBag = (Array.isArray(window.tiles) ? window.tiles : []).map((tile) => convertTile(tile, "tile"));
+
+  return {
+    starterTiles,
+    tileBag,
+  };
+}
+
+const CASCADIA_SOURCE_DATA = window.CASCADIA_DATA ?? createDataFromLegacyFormat();
+
+const TILE_REFERENCE_LIST = (CASCADIA_SOURCE_DATA.tileBag ?? []).map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
+const STARTER_TILE_SETUP = (CASCADIA_SOURCE_DATA.starterTiles ?? []).map((starter) => ({
   ...starter,
   tile: { ...starter.tile, printedAnimals: [...starter.tile.printedAnimals] },
 }));
@@ -92,7 +170,7 @@ const floatingStatusTextEl = document.getElementById("floating-status-text");
 
 
 if (TILE_REFERENCE_LIST.length === 0 || STARTER_TILE_SETUP.length === 0) {
-  throw new Error("CASCADIA_DATA is missing. Ensure data.js is loaded before script.js.");
+  throw new Error("Tile data is missing. Ensure data.js is loaded before script.js.");
 }
 
 function key(q, r) {
@@ -370,14 +448,10 @@ function darkenHexColor(colorHex, factor = 0.38) {
 }
 
 function starColorForTile(tile) {
-  const terrain = baseTerrainForCenterColor(tile);
+  const terrain = tile.kind === "single" ? tile.terrain : tile.terrainA;
+  const baseColor = terrainColors[terrain] ?? "#8a6f2a";
   const factor = terrain === "mountain" ? 0.5 : 0.38;
-  return darkenHexColor(terrainColors[terrain], factor);
-}
-
-function baseTerrainForCenterColor(tile) {
-  if (tile.kind === "single") return tile.terrain;
-  return tile.terrainA;
+  return darkenHexColor(baseColor, factor);
 }
 
 function hexTileCenterMarkup(tile, tokenOverride = null) {
