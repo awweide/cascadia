@@ -552,7 +552,7 @@ window.CASCADIA_DATA = {
       "terrainB": "mountain",
       "printedAnimals": [
         "🐻",
-        "🐻"
+        "🦅"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -564,7 +564,7 @@ window.CASCADIA_DATA = {
       "terrainB": "mountain",
       "printedAnimals": [
         "🦌",
-        "🦌"
+        "🦊"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -576,7 +576,7 @@ window.CASCADIA_DATA = {
       "terrainB": "mountain",
       "printedAnimals": [
         "🐟",
-        "🐟"
+        "🐻"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -588,7 +588,7 @@ window.CASCADIA_DATA = {
       "terrainB": "mountain",
       "printedAnimals": [
         "🦅",
-        "🦅"
+        "🦌"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -600,7 +600,7 @@ window.CASCADIA_DATA = {
       "terrainB": "mountain",
       "printedAnimals": [
         "🦊",
-        "🦊"
+        "🐟"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -852,7 +852,7 @@ window.CASCADIA_DATA = {
       "terrainB": "wetland",
       "printedAnimals": [
         "🐻",
-        "🐻"
+        "🦊"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -864,7 +864,7 @@ window.CASCADIA_DATA = {
       "terrainB": "wetland",
       "printedAnimals": [
         "🦌",
-        "🦌"
+        "🐻"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -876,7 +876,7 @@ window.CASCADIA_DATA = {
       "terrainB": "wetland",
       "printedAnimals": [
         "🐟",
-        "🐟"
+        "🦌"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -888,7 +888,7 @@ window.CASCADIA_DATA = {
       "terrainB": "wetland",
       "printedAnimals": [
         "🦅",
-        "🦅"
+        "🐟"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
@@ -900,7 +900,7 @@ window.CASCADIA_DATA = {
       "terrainB": "wetland",
       "printedAnimals": [
         "🦊",
-        "🦊"
+        "🦅"
       ],
       "bonusOnToken": false,
       "marketType": "split-double",
