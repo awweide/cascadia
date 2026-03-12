@@ -27,6 +27,12 @@ const animalNames = {
   "🐟": "Salmon",
 };
 
+const TILE_REFERENCE_LIST = (window.CASCADIA_DATA?.tileBag ?? []).map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
+const STARTER_TILE_SETUP = (window.CASCADIA_DATA?.starterTiles ?? []).map((starter) => ({
+  ...starter,
+  tile: { ...starter.tile, printedAnimals: [...starter.tile.printedAnimals] },
+}));
+
 // Edge indices are ordered clockwise as: NE, E, SE, SW, W, NW.
 const axialDirections = [
   [1, -1],
@@ -62,6 +68,9 @@ const state = {
   mixedSelection: { tileIndex: null, tokenIndex: null },
   eventLog: [],
   statusMessage: "",
+  tileBag: [],
+  animalBag: [],
+  pendingAnimalReturns: [],
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
@@ -81,6 +90,11 @@ const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
 const eventLogEl = document.getElementById("event-log");
 const floatingStatusTextEl = document.getElementById("floating-status-text");
 
+
+if (TILE_REFERENCE_LIST.length === 0 || STARTER_TILE_SETUP.length === 0) {
+  throw new Error("CASCADIA_DATA is missing. Ensure data.js is loaded before script.js.");
+}
+
 function key(q, r) {
   return `${q},${r}`;
 }
@@ -94,58 +108,29 @@ function randomItem(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function randomDistinctAnimals(count) {
-  const pool = [...animals];
-  const picks = [];
-  while (picks.length < count && pool.length) {
-    const index = Math.floor(Math.random() * pool.length);
-    picks.push(pool[index]);
-    pool.splice(index, 1);
+function shuffleInPlace(list) {
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [list[index], list[swapIndex]] = [list[swapIndex], list[index]];
   }
-  return picks;
-}
-
-function randomDistinctTerrains() {
-  const first = randomItem(terrains);
-  let second = randomItem(terrains);
-  while (second === first) second = randomItem(terrains);
-  return [first, second];
-}
-
-function drawDraftTileByType(type) {
-  if (type === "single-single") {
-    return {
-      kind: "single",
-      terrain: randomItem(terrains),
-      printedAnimals: [randomItem(animals)],
-      bonusOnToken: true,
-      marketType: type,
-    };
-  }
-
-  const [terrainA, terrainB] = randomDistinctTerrains();
-  const animalCount = type === "split-double" ? 2 : 3;
-  return {
-    kind: "split",
-    terrainA,
-    terrainB,
-    printedAnimals: randomDistinctAnimals(animalCount),
-    bonusOnToken: false,
-    marketType: type,
-  };
 }
 
 function drawDraftTile() {
-  const roll = Math.random();
-  if (roll < 1 / 3) return drawDraftTileByType("single-single");
-  if (roll < 2 / 3) return drawDraftTileByType("split-double");
-  return drawDraftTileByType("split-triple");
+  if (state.tileBag.length === 0) return null;
+  return state.tileBag.pop();
+}
+
+function drawAnimalToken() {
+  if (state.animalBag.length === 0) return randomItem(animals);
+  return state.animalBag.pop();
 }
 
 function drawPair() {
+  const tileDraft = drawDraftTile();
+  if (!tileDraft) return null;
   return {
-    tileDraft: drawDraftTile(),
-    token: randomItem(animals),
+    tileDraft,
+    token: drawAnimalToken(),
   };
 }
 
@@ -196,7 +181,11 @@ function tileFromDraft(tileDraft, rotationSteps) {
 }
 
 function refillMarketToFour() {
-  while (state.market.length < 4) state.market.push(drawPair());
+  while (state.market.length < 4) {
+    const pair = drawPair();
+    if (!pair) break;
+    state.market.push(pair);
+  }
 }
 
 function neighboringKeys(q, r) {
@@ -215,46 +204,7 @@ function openPlacementKeys() {
 }
 
 function placeStarterTriangle() {
-  const starterTiles = [
-    {
-      q: 0,
-      r: 0,
-      tile: {
-        kind: "single",
-        terrain: "forest",
-        printedAnimals: ["🦌"],
-        bonusOnToken: true,
-      },
-      token: null,
-      rotation: 0,
-    },
-    {
-      q: 1,
-      r: 0,
-      tile: {
-        kind: "split",
-        terrainA: "river",
-        terrainB: "mountain",
-        printedAnimals: ["🦊", "🐟"],
-      },
-      token: null,
-      rotation: 1,
-    },
-    {
-      q: 0,
-      r: 1,
-      tile: {
-        kind: "split",
-        terrainA: "prairie",
-        terrainB: "wetland",
-        printedAnimals: ["🐻", "🦅", "🦌"],
-      },
-      token: null,
-      rotation: 0,
-    },
-  ];
-
-  starterTiles.forEach((starter) => {
+  STARTER_TILE_SETUP.forEach((starter) => {
     const built = tileFromDraft(starter.tile, starter.rotation);
     built.starter = true;
     built.token = starter.token;
@@ -324,8 +274,17 @@ function countMarketTokenKinds() {
 function replaceTokenAtIndex(index) {
   if (index < 0 || index >= state.market.length) return;
   const oldToken = state.market[index].token;
-  state.market[index].token = randomItem(animals);
+  state.pendingAnimalReturns.push(oldToken);
+  state.market[index].token = drawAnimalToken();
   addEventLog(`Market token ${oldToken} at slot ${index + 1} rerolled to ${state.market[index].token}.`);
+}
+
+function returnPendingAnimalTokensToBag() {
+  if (state.pendingAnimalReturns.length === 0) return;
+  state.pendingAnimalReturns.forEach((animal) => state.animalBag.push(animal));
+  shuffleInPlace(state.animalBag);
+  addEventLog(`Returned ${state.pendingAnimalReturns.length} refreshed token(s) to the animal bag at end of turn.`);
+  state.pendingAnimalReturns = [];
 }
 
 function forceMarketQuadRefresh() {
@@ -363,6 +322,16 @@ function performOptionalTripleRefresh() {
   affected.forEach((index) => replaceTokenAtIndex(index));
   addEventLog(`Player chose to refresh triple ${animal} market tokens.`);
   return true;
+}
+
+function parseRefreshSelection(input) {
+  if (!input) return null;
+  const selected = input
+    .split(/[\s,]+/)
+    .map((value) => Number.parseInt(value, 10))
+    .filter((value) => Number.isInteger(value) && value >= 1 && value <= 4)
+    .map((value) => value - 1);
+  return Array.from(new Set(selected));
 }
 
 function spendNatureToken(reason) {
@@ -1011,6 +980,9 @@ function turnStateHash() {
     natureTokens: state.natureTokens,
     useNatureForMixedPair: state.useNatureForMixedPair,
     mixedSelection: { ...state.mixedSelection },
+    tileBag: state.tileBag.map((tile) => tile.id),
+    animalBag: [...state.animalBag],
+    pendingAnimalReturns: [...state.pendingAnimalReturns],
   });
 }
 
@@ -1049,6 +1021,9 @@ function snapshotTurnStart() {
     natureTokens: state.natureTokens,
     useNatureForMixedPair: state.useNatureForMixedPair,
     mixedSelection: { ...state.mixedSelection },
+    tileBag: state.tileBag.map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] })),
+    animalBag: [...state.animalBag],
+    pendingAnimalReturns: [...state.pendingAnimalReturns],
     eventLog: [...state.eventLog],
     turnStateHash: turnStateHash(),
   };
@@ -1070,6 +1045,9 @@ function resetToTurnStart() {
   state.natureTokens = snapshot.natureTokens;
   state.useNatureForMixedPair = snapshot.useNatureForMixedPair;
   state.mixedSelection = { ...snapshot.mixedSelection };
+  state.tileBag = snapshot.tileBag.map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
+  state.animalBag = [...snapshot.animalBag];
+  state.pendingAnimalReturns = [...snapshot.pendingAnimalReturns];
   state.eventLog = [...snapshot.eventLog];
   state.hoverCoordKey = null;
 
@@ -1093,6 +1071,8 @@ function finishTurn(chosenPair, placedToken, discardedTokenReason) {
   }
   if (leftmostDiscard) addEventLog(`Leftmost market pair token ${leftmostDiscard.token} discarded and refilled.`);
   if (forcedRefresh) addEventLog("Mandatory quad-token refresh was applied.");
+
+  returnPendingAnimalTokensToBag();
 
   if (state.turn >= state.maxTurns) {
     state.gameOver = true;
@@ -1256,6 +1236,11 @@ function restartGame() {
   state.tiles = new Map();
   placeStarterTriangle();
   state.market = [];
+  state.tileBag = TILE_REFERENCE_LIST.map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
+  shuffleInPlace(state.tileBag);
+  state.animalBag = animals.flatMap((animal) => Array(20).fill(animal));
+  shuffleInPlace(state.animalBag);
+  state.pendingAnimalReturns = [];
   refillMarketToFour();
   state.selectedPairIndex = null;
   state.selectedPair = null;
@@ -1323,10 +1308,16 @@ rerollSelectedTokensBtn.addEventListener("click", () => {
     return;
   }
 
-  state.market.forEach((_, index) => {
-    replaceTokenAtIndex(index);
-  });
-  addEventLog("All market tokens were rerolled while keeping the current tile hexes.");
+  const promptResult = window.prompt("Choose token slots to refresh (1-4), separated by commas/spaces:", "1 2 3 4");
+  const selectedIndexes = parseRefreshSelection(promptResult);
+  if (!selectedIndexes || selectedIndexes.length === 0) {
+    setStatus("Refresh cancelled. No market tokens were changed.");
+    render();
+    return;
+  }
+
+  selectedIndexes.forEach((index) => replaceTokenAtIndex(index));
+  addEventLog(`Refreshed selected market token slots: ${selectedIndexes.map((index) => index + 1).join(", ")}.`);
 
   while (forceMarketQuadRefresh()) {
     addEventLog("Quad-token market refresh triggered after reroll.");
