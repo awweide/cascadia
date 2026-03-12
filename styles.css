@@ -223,7 +223,7 @@ button:disabled {
   line-height: 1;
   opacity: 0.9;
   z-index: 1;
-  transform: translateY(-12.5%);
+  transform: translateY(-6.25%);
 }
 
 .hex-token {
