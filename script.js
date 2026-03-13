@@ -40,7 +40,7 @@ const scoringCardRules = {
     A: "Mating pairs: Score 4 11 19 27 points for 1 2 3 4+ connected groups of exactly two bears.",
     B: "Mother and cubs: Score 10 points for each connected group of exactly three bears.",
     C: "Families: Score 2 5 8 points for each connected group of exactly 1 2 3 bears. Score an additional 3 points for having at least one group of each size.",
-    D: "Big groups: Score 5 8 13 points for each connected group of exactly 5 8 13 bears.",
+    D: "Big groups: Score 5 8 13 points for each connected group of exactly 2 3 4 bears.",
   },
   "🦌": {
     A: "Lines: Score 2 5 9 13 for each connected, straight line of 1 2 3 4 elks. Each elk can only be part of one line.",
@@ -947,7 +947,12 @@ function scoreBear() {
     const base = counts[1] * 2 + counts[2] * 5 + counts[3] * 8;
     return base + (counts[1] > 0 && counts[2] > 0 && counts[3] > 0 ? 3 : 0);
   }
-  return groups.reduce((sum, group) => sum + (group.length === 5 ? 5 : group.length === 8 ? 8 : group.length === 13 ? 13 : 0), 0);
+  return groups.reduce((sum, group) => sum + (group.length === 2 ? 5 : group.length === 3 ? 8 : group.length === 4 ? 13 : 0), 0);
+}
+
+function scoringCardName(animal, card) {
+  const ruleText = scoringCardRules[animal]?.[card] ?? "";
+  return ruleText.split(":")[0] ?? "";
 }
 
 function elkLineScore(length) {
@@ -1310,10 +1315,11 @@ function renderScoreBreakdown(score) {
   );
 
   const animalItems = animals
-    .map(
-      (animal) =>
-        `<li>${animal} ${animalNames[animal]}: ${score.animalScores[animal]}${infoTip(animalTips[animal])}</li>`
-    )
+    .map((animal) => {
+      const card = state.gameSetup.scoringCards[animal] ?? "A";
+      const cardName = scoringCardName(animal, card);
+      return `<li>${animal}${card}: ${cardName}: ${score.animalScores[animal]}${infoTip(animalTips[animal])}</li>`;
+    })
     .join("");
 
   scoreBreakdownEl.innerHTML = `
@@ -1616,13 +1622,21 @@ function populateSetupSelect(selectEl, options, defaultValue) {
 }
 
 function initializeSetupScreen() {
+  const starterSetOptions = STARTER_TILE_SETS.map((starterSet, index) => {
+    const signatureTile = starterSet.find(
+      (starter) => starter.tile.kind === "single" && starter.tile.printedAnimals.length === 1
+    );
+    const label = signatureTile ? (animalNames[signatureTile.tile.printedAnimals[0]] ?? `Set ${index + 1}`) : `Set ${index + 1}`;
+    return { value: String(index), label };
+  });
+
   populateSetupSelect(
     setupStartingTileEl,
     [
-      ...STARTER_TILE_SETS.map((_, index) => ({ value: String(index), label: `Set ${index + 1}` })),
+      ...starterSetOptions,
       { value: "random", label: "Random" },
     ],
-    "0"
+    "random"
   );
   const cardOptions = [
     { value: "A", label: "A" },
@@ -1631,11 +1645,11 @@ function initializeSetupScreen() {
     { value: "D", label: "D" },
     { value: "random", label: "Random" },
   ];
-  populateSetupSelect(setupCardBearEl, cardOptions, "A");
-  populateSetupSelect(setupCardElkEl, cardOptions, "A");
-  populateSetupSelect(setupCardSalmonEl, cardOptions, "A");
-  populateSetupSelect(setupCardHawkEl, cardOptions, "A");
-  populateSetupSelect(setupCardFoxEl, cardOptions, "A");
+  populateSetupSelect(setupCardBearEl, cardOptions, "random");
+  populateSetupSelect(setupCardElkEl, cardOptions, "random");
+  populateSetupSelect(setupCardSalmonEl, cardOptions, "random");
+  populateSetupSelect(setupCardHawkEl, cardOptions, "random");
+  populateSetupSelect(setupCardFoxEl, cardOptions, "random");
 }
 
 function applySetupSelections() {
