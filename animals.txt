@@ -1,0 +1,35 @@
+Animal scoring cards: use one of four scoring cards for each type of animal per game.
+
+Bear:
+A, "Mating pairs": Score 4 11 19 17 points for 1 2 3 4+ connected groups of exactly two bears.
+B, "Mother and cubs": Score 10 points for each connected group of exactly three bears.
+C, "Families": Score 2 5 8 points for each connected group of exactly 1 2 3 bears. Score an additional 3 points for having at least one group of each size.
+D, "Big groups": Score 5 8 13 points for each connected group of exactly 5 8 13 bears.
+
+Elk:
+(Elks can score differently depending on which grouping each elk is chosen to be part of. The best possible assignment should be used for scoring.)
+A, "Lines": Score 2 5 9 13 for each connected, straight line of 1 2 3 4 elks. (Lines may be adjacent, but each elk can only be part of one line.)
+B, "Formations": Score 2 5 9 13 for each connected group of 1 2 3 (triangle shape only) 4 (diamond shape only) elks. (Groups may be adjacent, but each elk can only be part of one group.)
+C, "Herds": Score 2 4 7 10 14 18 23 28 points for each conncted group of 1 2 3 4 5 6 7 8+ elks. (Groups may be adjacent, but each elk can only be part of one group.)
+D, "Rings": Score 2 5 8 12 16 21 points for each ring of 1 2 3 4 5 6 elks. (A ring is a connected group that are all adjacent to the same, central hex.)
+
+Salmon:
+(A run is a connected group of salmon with no additional salmon adjacent to it and where each salmon has at most 2 adjacent salmon.)
+A, "Long run": Score 2 5 8 12 16 20 25 points for each run of 1 2 3 4 5 6 7+ salmon.
+B, "Short run": Score 2 4 9 11 17 points for each run of 1 2 3 4 5+ salmon.
+C, "Families": Score 10 12 15 points for each run of 3 4 5+ salmon.
+D, "Surrounded": Score for each run of at least 3 salmon, 1 points per salmon in the run plus 1 point per animal adjacent to the run. (Do not double count adjacent animals.)
+
+Hawk:
+(Line of sight: Two hawks have line of sight if they are not adjacent, if they are placed on hexes that are part of the same, straight line and if there are no other hawks between them on that line.)
+A, "Solitary": Score 2 5 8 11 14 18 22 26 points for 1 2 3 4 5 6 7 8+ hawks that are not adjacent to any other hawk.
+B, "Connected": Score 5 9 12 16 20 24 28 points for 2 3 4 5 6 7 8+ hawks that are not adjacent to any other hawk and that have line of sight to another hawk. (They do not need to all be connected by line of sight.)
+C, "Network": Score 3 points for each line of sight between hawks. (For each hawk, count number of other hawks with line of sight. Divide the total by 2 to avoid double counting.)
+D, "Territorial": Score 4 7 9 points for each pair of hawks with line of sight and with 1 2 3 unique species in between them. (Each hawk may only be part of one pair.)
+
+Fox:
+A, "Nearby animals": For each fox, score 1 2 3 4 5 points for 1 2 3 4 5 different species adjacent to it. (Foxes do count.)
+B, "Nearby pairs": For each fox, score 3 5 7 points for 1 2 3 different species with at least two animals adjacent to it. (Foxes do not count.)
+C, "Nearby related": For each fox, score 1 2 3 4 5 6 points for 1 2 3 4 5 6 animals of a single species adjacent to it. (Foxes do not count.)
+D, "Dynamic duos": For each connected group of exactly two foxes, score 5 7 9 11 points for 1 2 3 4 different species with at least 2 animals adjacent to it. (Foxes do not count.)
+
