@@ -4,7 +4,7 @@ Bear:
 A, "Mating pairs": Score 4 11 19 17 points for 1 2 3 4+ connected groups of exactly two bears.
 B, "Mother and cubs": Score 10 points for each connected group of exactly three bears.
 C, "Families": Score 2 5 8 points for each connected group of exactly 1 2 3 bears. Score an additional 3 points for having at least one group of each size.
-D, "Big groups": Score 5 8 13 points for each connected group of exactly 5 8 13 bears.
+D, "Big groups": Score 5 8 13 points for each connected group of exactly 2 3 4 bears.
 
 Elk:
 (Elks can score differently depending on which grouping each elk is chosen to be part of. The best possible assignment should be used for scoring.)
