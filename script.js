@@ -27,6 +27,47 @@ const animalNames = {
   "🐟": "Salmon",
 };
 
+const defaultScoringCards = {
+  "🐻": "A",
+  "🦌": "A",
+  "🐟": "A",
+  "🦅": "A",
+  "🦊": "A",
+};
+
+const scoringCardRules = {
+  "🐻": {
+    A: "Mating pairs: Score 4 11 19 27 points for 1 2 3 4+ connected groups of exactly two bears.",
+    B: "Mother and cubs: Score 10 points for each connected group of exactly three bears.",
+    C: "Families: Score 2 5 8 points for each connected group of exactly 1 2 3 bears. Score an additional 3 points for having at least one group of each size.",
+    D: "Big groups: Score 5 8 13 points for each connected group of exactly 5 8 13 bears.",
+  },
+  "🦌": {
+    A: "Lines: Score 2 5 9 13 for each connected, straight line of 1 2 3 4 elks. Each elk can only be part of one line.",
+    B: "Formations: Score 2 5 9 13 for each connected group of 1 2 3 (triangle only) 4 (diamond only) elks. Each elk can only be part of one group.",
+    C: "Herds: Score 2 4 7 10 14 18 23 28 points for each connected group of 1 2 3 4 5 6 7 8+ elks.",
+    D: "Rings: Score 2 5 8 12 16 21 points for each ring of 1 2 3 4 5 6 elks around the same central hex.",
+  },
+  "🐟": {
+    A: "Long run: Score 2 5 8 12 16 20 25 points for each run of 1 2 3 4 5 6 7+ salmon.",
+    B: "Short run: Score 2 4 9 11 17 points for each run of 1 2 3 4 5+ salmon.",
+    C: "Families: Score 10 12 15 points for each run of 3 4 5+ salmon.",
+    D: "Surrounded: For each run of at least 3 salmon, score 1 point per salmon plus 1 point per adjacent animal (without double counting adjacent animals).",
+  },
+  "🦅": {
+    A: "Solitary: Score 2 5 8 11 14 18 22 26 points for 1 2 3 4 5 6 7 8+ hawks not adjacent to any other hawk.",
+    B: "Connected: Score 5 9 12 16 20 24 28 points for 2 3 4 5 6 7 8+ hawks that are non-adjacent and have line of sight to another hawk.",
+    C: "Network: Score 3 points for each line of sight between hawks.",
+    D: "Territorial: Score 4 7 9 points for each pair of hawks with line of sight and with 1 2 3 unique species in between. Each hawk can only be part of one pair.",
+  },
+  "🦊": {
+    A: "Nearby animals: For each fox, score 1 2 3 4 5 points for 1 2 3 4 5 different species adjacent to it. Foxes count.",
+    B: "Nearby pairs: For each fox, score 3 5 7 points for 1 2 3 different species with at least two animals adjacent to it. Foxes do not count.",
+    C: "Nearby related: For each fox, score 1 2 3 4 5 6 points for 1 2 3 4 5 6 animals of a single species adjacent to it. Foxes do not count.",
+    D: "Dynamic duos: For each connected group of exactly two foxes, score 5 7 9 11 points for 1 2 3 4 different species with at least 2 animals adjacent to the pair. Foxes do not count.",
+  },
+};
+
 function createDataFromLegacyFormat() {
   const habitatMap = {
     forest: "forest",
@@ -77,28 +118,30 @@ function createDataFromLegacyFormat() {
   };
 
   const starterSets = Array.isArray(window.startingTiles) ? window.startingTiles : [];
-  const chosenStarterSet = starterSets.length > 0 ? randomItem(starterSets) : [];
   const starterCoords = [
     { q: 0, r: 0 },
     { q: 1, r: 0 },
     { q: 0, r: 1 },
   ];
 
-  const starterTiles = chosenStarterSet.map((starterTile, index) => {
-    const coord = starterCoords[index] ?? { q: index, r: 0 };
-    return {
-      q: coord.q,
-      r: coord.r,
-      rotation: toRotationSteps(starterTile.rotation),
-      tile: convertTile(starterTile, "starter"),
-      token: null,
-    };
-  });
+  const starterTileSets = starterSets.map((starterSet, setIndex) =>
+    starterSet.map((starterTile, index) => {
+      const coord = starterCoords[index] ?? { q: index, r: 0 };
+      return {
+        q: coord.q,
+        r: coord.r,
+        rotation: toRotationSteps(starterTile.rotation),
+        tile: convertTile(starterTile, `starter-${setIndex}`),
+        token: null,
+      };
+    })
+  );
 
   const tileBag = (Array.isArray(window.tiles) ? window.tiles : []).map((tile) => convertTile(tile, "tile"));
 
   return {
-    starterTiles,
+    starterTileSets,
+    starterTiles: starterTileSets[0] ?? [],
     tileBag,
   };
 }
@@ -106,10 +149,13 @@ function createDataFromLegacyFormat() {
 const CASCADIA_SOURCE_DATA = window.CASCADIA_DATA ?? createDataFromLegacyFormat();
 
 const TILE_REFERENCE_LIST = (CASCADIA_SOURCE_DATA.tileBag ?? []).map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
-const STARTER_TILE_SETUP = (CASCADIA_SOURCE_DATA.starterTiles ?? []).map((starter) => ({
+const STARTER_TILE_SETS = (
+  CASCADIA_SOURCE_DATA.starterTileSets
+  ?? (CASCADIA_SOURCE_DATA.starterTiles ? [CASCADIA_SOURCE_DATA.starterTiles] : [])
+).map((starterSet) => starterSet.map((starter) => ({
   ...starter,
   tile: { ...starter.tile, printedAnimals: [...starter.tile.printedAnimals] },
-}));
+})));
 
 // Edge indices are ordered clockwise as: NE, E, SE, SW, W, NW.
 const axialDirections = [
@@ -167,11 +213,25 @@ const resetTurnBtn = document.getElementById("reset-turn-btn");
 const confirmDiscardBtn = document.getElementById("confirm-discard-btn");
 const eventLogEl = document.getElementById("event-log");
 const floatingStatusTextEl = document.getElementById("floating-status-text");
+const setupScreenEl = document.getElementById("setup-screen");
+const gameScreenEl = document.getElementById("game-screen");
+const setupStartingTileEl = document.getElementById("setup-starting-tile");
+const setupCardBearEl = document.getElementById("setup-card-bear");
+const setupCardElkEl = document.getElementById("setup-card-elk");
+const setupCardSalmonEl = document.getElementById("setup-card-salmon");
+const setupCardHawkEl = document.getElementById("setup-card-hawk");
+const setupCardFoxEl = document.getElementById("setup-card-fox");
+const startGameBtn = document.getElementById("start-game-btn");
 
 
-if (TILE_REFERENCE_LIST.length === 0 || STARTER_TILE_SETUP.length === 0) {
+if (TILE_REFERENCE_LIST.length === 0 || STARTER_TILE_SETS.length === 0) {
   throw new Error("Tile data is missing. Ensure data.js is loaded before script.js.");
 }
+
+state.gameSetup = {
+  starterSetIndex: 0,
+  scoringCards: { ...defaultScoringCards },
+};
 
 function key(q, r) {
   return `${q},${r}`;
@@ -210,6 +270,17 @@ function drawPair() {
     tileDraft,
     token: drawAnimalToken(),
   };
+}
+
+function randomCardLetter() {
+  return randomItem(["A", "B", "C", "D"]);
+}
+
+function selectWithRandom(value, maxExclusive) {
+  if (value === "random") return Math.floor(Math.random() * maxExclusive);
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isInteger(parsed) && parsed >= 0 && parsed < maxExclusive) return parsed;
+  return 0;
 }
 
 function tileFromDraft(tileDraft, rotationSteps) {
@@ -281,8 +352,13 @@ function openPlacementKeys() {
   return Array.from(open);
 }
 
+function selectedStarterTileSet() {
+  const idx = state.gameSetup?.starterSetIndex ?? 0;
+  return STARTER_TILE_SETS[idx] ?? STARTER_TILE_SETS[0] ?? [];
+}
+
 function placeStarterTriangle() {
-  STARTER_TILE_SETUP.forEach((starter) => {
+  selectedStarterTileSet().forEach((starter) => {
     const built = tileFromDraft(starter.tile, starter.rotation);
     built.starter = true;
     built.token = starter.token;
@@ -806,6 +882,47 @@ function animalCoordKeys(animalType) {
   return coords;
 }
 
+function neighborCoordKeys(coordKey) {
+  const { q, r } = parseKey(coordKey);
+  return neighboringKeys(q, r);
+}
+
+function adjacentAnimalCounts(coordKeys, excludedAnimals = new Set()) {
+  const coordSet = new Set(coordKeys);
+  const counts = new Map();
+  coordKeys.forEach((coordKey) => {
+    neighborCoordKeys(coordKey).forEach((neighborKey) => {
+      if (coordSet.has(neighborKey)) return;
+      const neighborTile = state.tiles.get(neighborKey);
+      if (!neighborTile?.token || excludedAnimals.has(neighborTile.token)) return;
+      counts.set(neighborTile.token, (counts.get(neighborTile.token) ?? 0) + 1);
+    });
+  });
+  return counts;
+}
+
+function connectedComponentsFromSet(coordSet) {
+  const remaining = new Set(coordSet);
+  const groups = [];
+  while (remaining.size > 0) {
+    const start = remaining.values().next().value;
+    remaining.delete(start);
+    const group = [start];
+    const stack = [start];
+    while (stack.length) {
+      const current = stack.pop();
+      neighborCoordKeys(current).forEach((neighborKey) => {
+        if (!remaining.has(neighborKey)) return;
+        remaining.delete(neighborKey);
+        stack.push(neighborKey);
+        group.push(neighborKey);
+      });
+    }
+    groups.push(group);
+  }
+  return groups;
+}
+
 function cappedTierScore(count, values) {
   if (count <= 0) return 0;
   return values[Math.min(count, values.length) - 1];
@@ -813,8 +930,24 @@ function cappedTierScore(count, values) {
 
 function scoreBear() {
   const groups = buildAnimalGroups("🐻");
-  const pairCount = groups.filter((group) => group.length === 2).length;
-  return cappedTierScore(pairCount, [4, 11, 19, 27]);
+  const card = state.gameSetup.scoringCards["🐻"];
+
+  if (card === "A") {
+    const pairCount = groups.filter((group) => group.length === 2).length;
+    return cappedTierScore(pairCount, [4, 11, 19, 27]);
+  }
+  if (card === "B") {
+    return groups.filter((group) => group.length === 3).length * 10;
+  }
+  if (card === "C") {
+    const counts = { 1: 0, 2: 0, 3: 0 };
+    groups.forEach((group) => {
+      if (group.length >= 1 && group.length <= 3) counts[group.length] += 1;
+    });
+    const base = counts[1] * 2 + counts[2] * 5 + counts[3] * 8;
+    return base + (counts[1] > 0 && counts[2] > 0 && counts[3] > 0 ? 3 : 0);
+  }
+  return groups.reduce((sum, group) => sum + (group.length === 5 ? 5 : group.length === 8 ? 8 : group.length === 13 ? 13 : 0), 0);
 }
 
 function elkLineScore(length) {
@@ -866,8 +999,65 @@ function scoreElk() {
   const elkCoords = animalCoordKeys("🦌");
   if (elkCoords.length === 0) return 0;
 
+  const card = state.gameSetup.scoringCards["🦌"];
+  if (card === "C") {
+    return buildAnimalGroups("🦌").reduce((sum, group) => sum + cappedTierScore(group.length, [2, 4, 7, 10, 14, 18, 23, 28]), 0);
+  }
+
+  if (card === "D") {
+    const used = new Set();
+    let total = 0;
+    for (const [coordKey] of state.tiles.entries()) {
+      const neighbors = neighborCoordKeys(coordKey).filter((n) => state.tiles.get(n)?.token === "🦌" && !used.has(n));
+      if (neighbors.length === 0) continue;
+      const groups = connectedComponentsFromSet(new Set(neighbors));
+      groups.forEach((group) => {
+        if (group.length >= 1 && group.length <= 6) {
+          total += cappedTierScore(group.length, [2, 5, 8, 12, 16, 21]);
+          group.forEach((g) => used.add(g));
+        }
+      });
+    }
+    return total;
+  }
+
   const indexByKey = new Map(elkCoords.map((coordKey, index) => [coordKey, index]));
-  const segments = buildElkLineSegments(elkCoords, indexByKey);
+  let segments = buildElkLineSegments(elkCoords, indexByKey);
+  if (card === "B") {
+    const elkSet = new Set(elkCoords);
+    elkCoords.forEach((centerKey) => {
+      const neighbors = neighborCoordKeys(centerKey).filter((n) => elkSet.has(n));
+      if (neighbors.length >= 2) {
+        for (let i = 0; i < neighbors.length; i += 1) {
+          for (let j = i + 1; j < neighbors.length; j += 1) {
+            const a = parseKey(neighbors[i]);
+            const b = parseKey(neighbors[j]);
+            const c = parseKey(centerKey);
+            const connected = neighboringKeys(a.q, a.r).includes(neighbors[j]);
+            if (connected) {
+              const tri = (1 << indexByKey.get(centerKey)) | (1 << indexByKey.get(neighbors[i])) | (1 << indexByKey.get(neighbors[j]));
+              segments.push(tri);
+            }
+          }
+        }
+      }
+      if (neighbors.length >= 4) {
+        for (let i = 0; i < neighbors.length; i += 1) {
+          for (let j = i + 1; j < neighbors.length; j += 1) {
+            for (let k = j + 1; k < neighbors.length; k += 1) {
+              const trio = [neighbors[i], neighbors[j], neighbors[k]];
+              const comp = connectedComponentsFromSet(new Set(trio));
+              if (comp.length === 1) {
+                const mask = trio.reduce((acc, coord) => acc | (1 << indexByKey.get(coord)), 1 << indexByKey.get(centerKey));
+                if (countBits(mask) === 4) segments.push(mask);
+              }
+            }
+          }
+        }
+      }
+    });
+    segments = Array.from(new Set(segments));
+  }
   const segmentsByIndex = elkCoords.map(() => []);
 
   segments.forEach((segmentMask) => {
@@ -890,7 +1080,8 @@ function scoreElk() {
     segmentsByIndex[pivotIndex].forEach((segmentMask) => {
       if ((segmentMask & mask) !== segmentMask) return;
       const segmentLength = countBits(segmentMask);
-      const score = elkLineScore(segmentLength) + best(mask ^ segmentMask);
+      const values = card === "B" ? [2, 5, 9, 13] : [2, 5, 9, 13];
+      const score = cappedTierScore(segmentLength, values) + best(mask ^ segmentMask);
       if (score > top) top = score;
     });
 
@@ -912,51 +1103,164 @@ function countBits(mask) {
 }
 
 function scoreFox() {
+  const card = state.gameSetup.scoringCards["🦊"];
   let score = 0;
 
   for (const [coordKey, tile] of state.tiles.entries()) {
     if (tile.token !== "🦊") continue;
 
     const { q, r } = parseKey(coordKey);
-    const neighborAnimals = new Set();
+    const neighborTokens = [];
     neighboringKeys(q, r).forEach((neighborKey) => {
       const neighborTile = state.tiles.get(neighborKey);
       if (!neighborTile || !neighborTile.token) return;
-      neighborAnimals.add(neighborTile.token);
+      neighborTokens.push(neighborTile.token);
     });
 
-    score += cappedTierScore(neighborAnimals.size, [1, 2, 3, 4, 5]);
+    if (card === "A") {
+      score += cappedTierScore(new Set(neighborTokens).size, [1, 2, 3, 4, 5]);
+    } else if (card === "B") {
+      const counts = new Map();
+      neighborTokens.filter((t) => t !== "🦊").forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1));
+      const speciesWithPair = Array.from(counts.values()).filter((count) => count >= 2).length;
+      score += cappedTierScore(speciesWithPair, [3, 5, 7]);
+    } else if (card === "C") {
+      const counts = new Map();
+      neighborTokens.filter((t) => t !== "🦊").forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1));
+      const largest = Math.max(0, ...counts.values());
+      score += cappedTierScore(largest, [1, 2, 3, 4, 5, 6]);
+    }
+  }
+
+  if (card === "D") {
+    const groups = buildAnimalGroups("🦊").filter((group) => group.length === 2);
+    return groups.reduce((sum, group) => {
+      const counts = adjacentAnimalCounts(group, new Set(["🦊"]));
+      const speciesWithPair = Array.from(counts.values()).filter((count) => count >= 2).length;
+      return sum + cappedTierScore(speciesWithPair, [5, 7, 9, 11]);
+    }, 0);
   }
 
   return score;
 }
 
+function hawkLineOfSightPairs() {
+  const hawks = new Set(animalCoordKeys("🦅"));
+  const pairs = [];
+  const directionPairs = [0, 1, 2];
+  hawks.forEach((coordKey) => {
+    const { q, r } = parseKey(coordKey);
+    directionPairs.forEach((directionIndex) => {
+      const [dq, dr] = axialDirections[directionIndex];
+      let cq = q + dq;
+      let cr = r + dr;
+      let distance = 1;
+      while (true) {
+        const probe = key(cq, cr);
+        if (!state.tiles.has(probe)) break;
+        if (hawks.has(probe)) {
+          if (distance > 1) pairs.push([coordKey, probe]);
+          break;
+        }
+        cq += dq;
+        cr += dr;
+        distance += 1;
+      }
+    });
+  });
+  return pairs;
+}
+
 function scoreHawk() {
-  const groups = buildAnimalGroups("🦅");
-  const isolatedCount = groups.filter((group) => group.length === 1).length;
-  return cappedTierScore(isolatedCount, [2, 5, 8, 11, 14, 18, 22, 26]);
+  const hawks = animalCoordKeys("🦅");
+  const card = state.gameSetup.scoringCards["🦅"];
+  const solitary = hawks.filter((coordKey) => neighborCoordKeys(coordKey).every((n) => state.tiles.get(n)?.token !== "🦅"));
+  if (card === "A") return cappedTierScore(solitary.length, [2, 5, 8, 11, 14, 18, 22, 26]);
+
+  const losPairs = hawkLineOfSightPairs();
+  if (card === "B") {
+    const withSight = new Set(losPairs.flat());
+    const count = solitary.filter((h) => withSight.has(h)).length;
+    return cappedTierScore(count, [5, 9, 12, 16, 20, 24, 28]);
+  }
+  if (card === "C") return losPairs.length * 3;
+
+  const speciesBetweenScore = (aKey, bKey) => {
+    const a = parseKey(aKey);
+    const b = parseKey(bKey);
+    const dq = Math.sign(b.q - a.q);
+    const dr = Math.sign(b.r - a.r);
+    const seen = new Set();
+    let cq = a.q + dq;
+    let cr = a.r + dr;
+    while (cq !== b.q || cr !== b.r) {
+      const midToken = state.tiles.get(key(cq, cr))?.token;
+      if (midToken) seen.add(midToken);
+      cq += dq;
+      cr += dr;
+    }
+    const unique = seen.size;
+    if (unique === 1) return 4;
+    if (unique === 2) return 7;
+    if (unique === 3) return 9;
+    return 0;
+  };
+  const available = [...losPairs].sort((a, b) => speciesBetweenScore(b[0], b[1]) - speciesBetweenScore(a[0], a[1]));
+  const used = new Set();
+  let total = 0;
+  available.forEach(([a, b]) => {
+    if (used.has(a) || used.has(b)) return;
+    const pairScore = speciesBetweenScore(a, b);
+    if (pairScore <= 0) return;
+    used.add(a);
+    used.add(b);
+    total += pairScore;
+  });
+  return total;
+}
+
+function salmonRuns() {
+  const groups = buildAnimalGroups("🐟");
+  return groups.filter((group) => {
+    const groupSet = new Set(group);
+    const validDegrees = group.every((coordKey) => {
+      const neighbors = neighborCoordKeys(coordKey).filter((neighborKey) => groupSet.has(neighborKey));
+      return neighbors.length <= 2;
+    });
+    if (!validDegrees) return false;
+    return group.every((coordKey) =>
+      neighborCoordKeys(coordKey).every((neighborKey) => !state.tiles.get(neighborKey)?.token || groupSet.has(neighborKey) || state.tiles.get(neighborKey).token !== "🐟")
+    );
+  });
 }
 
 function scoreSalmon() {
-  const groups = buildAnimalGroups("🐟");
-  let score = 0;
-
-  groups.forEach((group) => {
+  const runs = salmonRuns();
+  const card = state.gameSetup.scoringCards["🐟"];
+  if (card === "A") return runs.reduce((sum, group) => sum + cappedTierScore(group.length, [2, 5, 8, 12, 16, 20, 25]), 0);
+  if (card === "B") return runs.reduce((sum, group) => sum + cappedTierScore(group.length, [2, 4, 9, 11, 17]), 0);
+  if (card === "C") {
+    return runs.reduce((sum, group) => {
+      if (group.length === 3) return sum + 10;
+      if (group.length === 4) return sum + 12;
+      if (group.length >= 5) return sum + 15;
+      return sum;
+    }, 0);
+  }
+  return runs.reduce((sum, group) => {
     const groupSet = new Set(group);
-    const valid = group.every((coordKey) => {
-      const { q, r } = parseKey(coordKey);
-      let adjacentFish = 0;
-      neighboringKeys(q, r).forEach((neighborKey) => {
-        if (groupSet.has(neighborKey)) adjacentFish += 1;
+    if (group.length < 3) return sum;
+    const adjacent = new Set();
+    group.forEach((coordKey) => {
+      neighborCoordKeys(coordKey).forEach((neighborKey) => {
+        const token = state.tiles.get(neighborKey)?.token;
+        if (!token) return;
+        if (groupSet.has(neighborKey)) return;
+        adjacent.add(neighborKey);
       });
-      return adjacentFish >= 1 && adjacentFish <= 2;
     });
-
-    if (!valid) return;
-    score += cappedTierScore(group.length, [2, 5, 8, 12, 16, 20, 25]);
-  });
-
-  return score;
+    return sum + group.length + adjacent.size;
+  }, 0);
 }
 
 function computeAnimalScores() {
@@ -998,13 +1302,12 @@ function renderScoreBreakdown(score) {
     .map((terrain) => `<li><span class="terrain-chip" style="background:${terrainColors[terrain]};"></span>${terrainNames[terrain]}: ${score.terrainScores[terrain]}</li>`)
     .join("");
 
-  const animalTips = {
-    "🐻": "Score 4 11 19 27 points for 1 2 3 4+ pairs of bears (smaller or larger groups do not count).",
-    "🦌": "For each disjoint straight line of elks, score 2 5 9 13 points for 1 2 3 4 elks in the line.",
-    "🐟": "For each group of salmon where no salmon is adjacent to more than 2 other salmon, score 2 5 8 12 16 20 25 points for 1 2 3 4 5 6 7+ salmon in the group.",
-    "🦅": "Score 2 5 8 11 14 18 22 26 points for 1 2 3 4 5 6 7 8+ single hawks (larger groups do not count).",
-    "🦊": "For each fox, score 1 2 3 4 5 points for 1 2 3 4 5 different species adjacent to it.",
-  };
+  const animalTips = Object.fromEntries(
+    animals.map((animal) => {
+      const card = state.gameSetup.scoringCards[animal] ?? "A";
+      return [animal, `[Card ${card}] ${scoringCardRules[animal][card]}`];
+    })
+  );
 
   const animalItems = animals
     .map(
@@ -1016,7 +1319,7 @@ function renderScoreBreakdown(score) {
   scoreBreakdownEl.innerHTML = `
     <div class="score-columns">
       <div class="score-column">
-        <strong>Terrain contributions${infoTip("For each type of terrain, gain 1 type for each hex in the largest contiguous area.")}</strong>
+        <strong>Terrain contributions${infoTip("For each type of terrain, score 1 point for each tile in the largest, connected group of tiles of that terrain type.")}</strong>
         <ul>${terrainItems}</ul>
         <p class="score-subtotal">Terrain subtotal: ${score.terrainTotal}</p>
       </div>
@@ -1306,6 +1609,49 @@ function render() {
   floatingStatusTextEl.textContent = floatingStatusText();
 }
 
+function populateSetupSelect(selectEl, options, defaultValue) {
+  selectEl.innerHTML = options
+    .map((option) => `<option value="${option.value}" ${option.value === defaultValue ? "selected" : ""}>${option.label}</option>`)
+    .join("");
+}
+
+function initializeSetupScreen() {
+  populateSetupSelect(
+    setupStartingTileEl,
+    [
+      ...STARTER_TILE_SETS.map((_, index) => ({ value: String(index), label: `Set ${index + 1}` })),
+      { value: "random", label: "Random" },
+    ],
+    "0"
+  );
+  const cardOptions = [
+    { value: "A", label: "A" },
+    { value: "B", label: "B" },
+    { value: "C", label: "C" },
+    { value: "D", label: "D" },
+    { value: "random", label: "Random" },
+  ];
+  populateSetupSelect(setupCardBearEl, cardOptions, "A");
+  populateSetupSelect(setupCardElkEl, cardOptions, "A");
+  populateSetupSelect(setupCardSalmonEl, cardOptions, "A");
+  populateSetupSelect(setupCardHawkEl, cardOptions, "A");
+  populateSetupSelect(setupCardFoxEl, cardOptions, "A");
+}
+
+function applySetupSelections() {
+  state.gameSetup.starterSetIndex = selectWithRandom(setupStartingTileEl.value, STARTER_TILE_SETS.length);
+  const selections = {
+    "🐻": setupCardBearEl.value,
+    "🦌": setupCardElkEl.value,
+    "🐟": setupCardSalmonEl.value,
+    "🦅": setupCardHawkEl.value,
+    "🦊": setupCardFoxEl.value,
+  };
+  Object.entries(selections).forEach(([animal, selected]) => {
+    state.gameSetup.scoringCards[animal] = selected === "random" ? randomCardLetter() : selected;
+  });
+}
+
 function restartGame() {
   state.tiles = new Map();
   placeStarterTriangle();
@@ -1427,6 +1773,13 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+startGameBtn.addEventListener("click", () => {
+  applySetupSelections();
+  setupScreenEl.classList.add("hidden");
+  gameScreenEl.classList.remove("hidden");
+  restartGame();
+});
+
 function updateHoverCoordFromEventTarget(event) {
   if (state.phase !== "placeTile" && state.phase !== "placeToken") {
     state.hoverCoordKey = null;
@@ -1460,4 +1813,4 @@ boardEl.addEventListener("mouseleave", () => {
   renderBoard();
 });
 
-restartGame();
+initializeSetupScreen();

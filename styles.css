@@ -20,6 +20,33 @@ body {
 .app { max-width: 1200px; margin: 0 auto; padding: 1rem 1rem 1.5rem; }
 h1, h2 { margin: 0.4rem 0; }
 
+.hidden { display: none !important; }
+
+.setup-screen {
+  margin-top: 1rem;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 1px 6px rgb(0 0 0 / 8%);
+}
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 0.6rem 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.setup-grid label {
+  display: grid;
+  gap: 0.2rem;
+  font-weight: 600;
+}
+
+.setup-grid select {
+  padding: 0.4rem;
+}
+
 .app-header {
   display: flex;
   justify-content: space-between;
