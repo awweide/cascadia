@@ -8,6 +8,32 @@
   </head>
   <body>
     <main class="app">
+      <section id="setup-screen" class="setup-screen">
+        <h2>Game Setup</h2>
+        <div class="setup-grid">
+          <label>Starting tile
+            <select id="setup-starting-tile"></select>
+          </label>
+          <label>Bear scoring card
+            <select id="setup-card-bear"></select>
+          </label>
+          <label>Elk scoring card
+            <select id="setup-card-elk"></select>
+          </label>
+          <label>Salmon scoring card
+            <select id="setup-card-salmon"></select>
+          </label>
+          <label>Hawk scoring card
+            <select id="setup-card-hawk"></select>
+          </label>
+          <label>Fox scoring card
+            <select id="setup-card-fox"></select>
+          </label>
+        </div>
+        <button id="start-game-btn" type="button">Start Game</button>
+      </section>
+
+      <div id="game-screen" class="hidden">
       <header class="app-header">
         <div>
           <h1>Solo Cascadia</h1>
@@ -46,6 +72,7 @@
             <button id="reroll-triple-btn" type="button">Reroll 3-of-a-Kind</button>
           </div>
         </aside>
+      </div>
       </div>
     </main>
 
