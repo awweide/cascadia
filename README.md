@@ -53,6 +53,10 @@ python agents/random_agent.py --data data.js --game-seed 42 --agent-seed 7 --out
 
 This writes a full-turn JSON logfile compatible with `engine.replay_log(...)` and with the browser replay fork below.
 
+Bundled example logfile in this repository:
+
+- `examples/random_agent_seed42_7_log.json` (generated with `--game-seed 42 --agent-seed 7`)
+
 ### JavaScript replay fork for Python logs
 
 `replay.html` + `replay_fork.js` provide a lightweight browser fork that can load the Python logfile JSON and play through turns (prev/next) using stored board + market snapshots and turn inputs.
@@ -67,6 +71,8 @@ Then open:
 
 - `http://localhost:8000/index.html` (main game)
 - `http://localhost:8000/replay.html` (log replay fork)
+
+In the replay fork page, click **Load bundled example** to load and step through `examples/random_agent_seed42_7_log.json`.
 
 ## Modes
 

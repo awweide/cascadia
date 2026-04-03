@@ -1,0 +1,6305 @@
+{
+  "seed": 42,
+  "entries": [
+    {
+      "turn": 1,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 2,
+          "token_index": 2,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -1,
+          "r": 2,
+          "rotation": 3,
+          "token_q": 0,
+          "token_r": 0
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 1,
+        "max_turns": 20,
+        "nature_tokens": 1,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-30",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-51",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-47",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-44",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 79,
+        "animal_bag_count": 95
+      }
+    },
+    {
+      "turn": 2,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 1,
+          "r": 1,
+          "rotation": 0,
+          "token_q": 1,
+          "token_r": 1
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 2,
+        "max_turns": 20,
+        "nature_tokens": 2,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-47",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-44",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-33",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "wetland"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-29",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          }
+        ],
+        "tile_bag_count": 77,
+        "animal_bag_count": 94
+      }
+    },
+    {
+      "turn": 3,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 1,
+          "r": 2,
+          "rotation": 1,
+          "token_q": 1,
+          "token_r": 0
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 3,
+        "max_turns": 20,
+        "nature_tokens": 2,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-33",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "wetland"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-29",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-85",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-27",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          }
+        ],
+        "tile_bag_count": 75,
+        "animal_bag_count": 93
+      }
+    },
+    {
+      "turn": 4,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 0,
+          "r": 2,
+          "rotation": 3,
+          "token_q": 1,
+          "token_r": 2
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 4,
+        "max_turns": 20,
+        "nature_tokens": 2,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-85",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-27",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-70",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-20",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain"
+            ],
+            "kind": "single"
+          }
+        ],
+        "tile_bag_count": 73,
+        "animal_bag_count": 92
+      }
+    },
+    {
+      "turn": 5,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 1,
+          "token_index": 1,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -2,
+          "r": 3,
+          "rotation": 4,
+          "token_q": -1,
+          "token_r": 2
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 5,
+        "max_turns": 20,
+        "nature_tokens": 3,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-70",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-20",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-98",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-91",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 71,
+        "animal_bag_count": 91
+      }
+    },
+    {
+      "turn": 6,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 2,
+          "r": 1,
+          "rotation": 4,
+          "token_q": -2,
+          "token_r": 3
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 6,
+        "max_turns": 20,
+        "nature_tokens": 4,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-98",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-91",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-43",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-45",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 69,
+        "animal_bag_count": 90
+      }
+    },
+    {
+      "turn": 7,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 1,
+          "token_index": 1,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -3,
+          "r": 4,
+          "rotation": 4,
+          "token_q": 0,
+          "token_r": 2
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 7,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-43",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-45",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-80",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-88",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 67,
+        "animal_bag_count": 89
+      }
+    },
+    {
+      "turn": 8,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -1,
+          "r": 1,
+          "rotation": 0,
+          "token_q": 2,
+          "token_r": 1
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 8,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-80",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-88",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-41",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-69",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 65,
+        "animal_bag_count": 88
+      }
+    },
+    {
+      "turn": 9,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 1,
+          "token_index": 1,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 0,
+          "r": -1,
+          "rotation": 3,
+          "token_q": -1,
+          "token_r": 1
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 9,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-41",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-69",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-95",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-73",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 63,
+        "animal_bag_count": 87
+      }
+    },
+    {
+      "turn": 10,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 3,
+          "r": 0,
+          "rotation": 2,
+          "token_q": 3,
+          "token_r": 0
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 10,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-95",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-73",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-53",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-94",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 61,
+        "animal_bag_count": 86
+      }
+    },
+    {
+      "turn": 11,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 3,
+          "r": -1,
+          "rotation": 4,
+          "token_q": -3,
+          "token_r": 4
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 11,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-53",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-94",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-67",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-71",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 59,
+        "animal_bag_count": 85
+      }
+    },
+    {
+      "turn": 12,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 2,
+          "token_index": 2,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -3,
+          "r": 5,
+          "rotation": 4,
+          "token_q": -3,
+          "token_r": 5
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 12,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-94",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-71",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-16",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-64",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 57,
+        "animal_bag_count": 84
+      }
+    },
+    {
+      "turn": 13,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 2,
+          "r": 2,
+          "rotation": 1,
+          "token_q": 0,
+          "token_r": 1
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 13,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-16",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "mountain"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-64",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-76",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-26",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "prairie"
+            ],
+            "kind": "single"
+          }
+        ],
+        "tile_bag_count": 55,
+        "animal_bag_count": 83
+      }
+    },
+    {
+      "turn": 14,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 3,
+          "token_index": 3,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 4,
+          "r": -1,
+          "rotation": 2,
+          "token_q": 2,
+          "token_r": 2
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 14,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-64",
+            "token": "\ud83e\udd8c",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-76",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-60",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-86",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 53,
+        "animal_bag_count": 82
+      }
+    },
+    {
+      "turn": 15,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 3,
+          "token_index": 3,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -1,
+          "r": 3,
+          "rotation": 2,
+          "token_q": 0,
+          "token_r": -1
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 15,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-76",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-60",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-37",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "river"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-77",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 51,
+        "animal_bag_count": 81
+      }
+    },
+    {
+      "turn": 16,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 1,
+          "token_index": 1,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 3,
+          "r": 2,
+          "rotation": 1,
+          "token_q": null,
+          "token_r": null
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 16,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              2
+            ],
+            "id": "tile-60",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-37",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "river"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-77",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "river",
+              "mountain"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-25",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "forest"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-93",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 49,
+        "animal_bag_count": 80
+      }
+    },
+    {
+      "turn": 17,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": 2,
+          "r": 0,
+          "rotation": 2,
+          "token_q": null,
+          "token_r": null
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 17,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              0
+            ],
+            "id": "tile-37",
+            "kind": "single",
+            "terrains": [
+              "river"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              2
+            ],
+            "id": "tile-60",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-25",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "forest"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-93",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-79",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-68",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 47,
+        "animal_bag_count": 79
+      }
+    },
+    {
+      "turn": 18,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 3,
+          "token_index": 3,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -1,
+          "r": 0,
+          "rotation": 5,
+          "token_q": null,
+          "token_r": null
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 18,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              0
+            ],
+            "id": "tile-68",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              0
+            ],
+            "id": "tile-37",
+            "kind": "single",
+            "terrains": [
+              "river"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              2
+            ],
+            "id": "tile-60",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-93",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-79",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-22",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-21",
+            "token": "\ud83e\udd8a",
+            "terrains": [
+              "forest"
+            ],
+            "kind": "single"
+          }
+        ],
+        "tile_bag_count": 45,
+        "animal_bag_count": 78
+      }
+    },
+    {
+      "turn": 19,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 3,
+          "token_index": 3,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -2,
+          "r": 5,
+          "rotation": 4,
+          "token_q": null,
+          "token_r": null
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 19,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              5
+            ],
+            "id": "tile-21",
+            "kind": "single",
+            "terrains": [
+              "forest"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              -1,
+              0
+            ],
+            "id": "tile-68",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              0
+            ],
+            "id": "tile-37",
+            "kind": "single",
+            "terrains": [
+              "river"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              2
+            ],
+            "id": "tile-60",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-79",
+            "token": "\ud83d\udc1f",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-22",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-40",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "river"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-62",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 43,
+        "animal_bag_count": 77
+      }
+    },
+    {
+      "turn": 20,
+      "input": {
+        "manipulations": [],
+        "choice": {
+          "tile_index": 0,
+          "token_index": 0,
+          "is_mixed_pair": false
+        },
+        "placement": {
+          "q": -3,
+          "r": 3,
+          "rotation": 4,
+          "token_q": -1,
+          "token_r": 0
+        }
+      },
+      "state": {
+        "seed": 42,
+        "turn": 20,
+        "max_turns": 20,
+        "nature_tokens": 5,
+        "game_over": false,
+        "board": [
+          {
+            "coord": [
+              -3,
+              3
+            ],
+            "id": "tile-79",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              4
+            ],
+            "id": "tile-91",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -3,
+              5
+            ],
+            "id": "tile-67",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              3
+            ],
+            "id": "tile-27",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -2,
+              5
+            ],
+            "id": "tile-21",
+            "kind": "single",
+            "terrains": [
+              "forest"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              -1,
+              0
+            ],
+            "id": "tile-68",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              1
+            ],
+            "id": "tile-43",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              2
+            ],
+            "id": "tile-19",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              -1,
+              3
+            ],
+            "id": "tile-86",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "wetland"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              -1
+            ],
+            "id": "tile-88",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              0
+            ],
+            "id": "starter-0-1",
+            "kind": "single",
+            "terrains": [
+              "mountain"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc3b",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              1
+            ],
+            "id": "starter-0-3",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "river"
+            ],
+            "rotation": 5,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83d\udc3b"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              0,
+              2
+            ],
+            "id": "tile-33",
+            "kind": "single",
+            "terrains": [
+              "wetland"
+            ],
+            "rotation": 3,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              0
+            ],
+            "id": "starter-0-2",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83e\udd8a",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              1
+            ],
+            "id": "tile-30",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 0,
+            "printed_animals": [
+              "\ud83d\udc1f"
+            ],
+            "token": "\ud83d\udc1f",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              1,
+              2
+            ],
+            "id": "tile-47",
+            "kind": "split",
+            "terrains": [
+              "prairie",
+              "wetland"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc1f",
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              0
+            ],
+            "id": "tile-37",
+            "kind": "single",
+            "terrains": [
+              "river"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          },
+          {
+            "coord": [
+              2,
+              1
+            ],
+            "id": "tile-70",
+            "kind": "split",
+            "terrains": [
+              "wetland",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8a",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd8a",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              2,
+              2
+            ],
+            "id": "tile-94",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83e\udd85"
+            ],
+            "token": "\ud83e\udd85",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              -1
+            ],
+            "id": "tile-95",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "river"
+            ],
+            "rotation": 4,
+            "printed_animals": [
+              "\ud83e\udd8c",
+              "\ud83d\udc3b"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              0
+            ],
+            "id": "tile-41",
+            "kind": "split",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd85",
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": "\ud83e\udd8c",
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              3,
+              2
+            ],
+            "id": "tile-60",
+            "kind": "split",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "rotation": 1,
+            "printed_animals": [
+              "\ud83d\udc3b",
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": false
+          },
+          {
+            "coord": [
+              4,
+              -1
+            ],
+            "id": "tile-26",
+            "kind": "single",
+            "terrains": [
+              "prairie"
+            ],
+            "rotation": 2,
+            "printed_animals": [
+              "\ud83e\udd8c"
+            ],
+            "token": null,
+            "bonus_on_token": true
+          }
+        ],
+        "market": [
+          {
+            "tile_id": "tile-40",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "river"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-62",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "forest",
+              "prairie"
+            ],
+            "kind": "split"
+          },
+          {
+            "tile_id": "tile-38",
+            "token": "\ud83e\udd85",
+            "terrains": [
+              "river"
+            ],
+            "kind": "single"
+          },
+          {
+            "tile_id": "tile-58",
+            "token": "\ud83d\udc3b",
+            "terrains": [
+              "mountain",
+              "forest"
+            ],
+            "kind": "split"
+          }
+        ],
+        "tile_bag_count": 41,
+        "animal_bag_count": 76
+      }
+    }
+  ]
+}
