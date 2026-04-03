@@ -14,6 +14,60 @@ python3 -m http.server 8000
 
 Then visit <http://localhost:8000>.
 
+## Python Engine (new)
+
+A deterministic Python engine is available in `cascadia_engine.py` with a compact agent-friendly API:
+
+- deterministic random seeds
+- full game state encoding (`encode_state()` and `encode_state_text()`)
+- move validation through `apply_turn(...)`
+- end scoring with `score()`
+- full-text JSON game logging with `export_log()`
+- log replay compatibility (`replay_log(...)`) so a game can be played back from an action logfile
+
+Quick example:
+
+```python
+from cascadia_engine import CascadiaEngine, MarketChoice, PlacementInput, TurnInput
+
+engine = CascadiaEngine.from_legacy_data_js("data.js", seed=42)
+engine.reset()
+
+turn = TurnInput(
+    manipulations=tuple(),
+    choice=MarketChoice(tile_index=0, token_index=0, is_mixed_pair=False),
+    placement=PlacementInput(q=2, r=-1, rotation=0, token_q=0, token_r=0),
+)
+engine.apply_turn(turn)
+print(engine.encode_state_text())
+print(engine.score())
+```
+
+### Random legal-move agent
+
+Run a full game with a deterministic random agent and produce a replay logfile:
+
+```bash
+python agents/random_agent.py --data data.js --game-seed 42 --agent-seed 7 --out random_agent_game_log.json
+```
+
+This writes a full-turn JSON logfile compatible with `engine.replay_log(...)` and with the browser replay fork below.
+
+### JavaScript replay fork for Python logs
+
+`replay.html` + `replay_fork.js` provide a lightweight browser fork that can load the Python logfile JSON and play through turns (prev/next) using stored board + market snapshots and turn inputs.
+
+Run locally:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open:
+
+- `http://localhost:8000/index.html` (main game)
+- `http://localhost:8000/replay.html` (log replay fork)
+
 ## Modes
 
 - **Full**: 20 turns.
