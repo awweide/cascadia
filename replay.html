@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cascadia Log Replay (Fork)</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .replay-panel { max-width: 1080px; margin: 1rem auto; display: grid; gap: 1rem; }
+      .replay-controls { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+      textarea { width: 100%; min-height: 180px; font-family: monospace; }
+      .replay-grid { display:grid; grid-template-columns: 1fr 340px; gap:1rem; }
+      .market-list, .board-list { background:#fff; border:1px solid #ddd; border-radius:8px; padding:.75rem; }
+      .market-list li, .board-list li { font-family: monospace; margin: .2rem 0; }
+    </style>
+  </head>
+  <body>
+    <main class="replay-panel">
+      <h1>Cascadia Python Log Replay</h1>
+      <p>Paste a logfile produced by <code>agents/random_agent.py</code> (or <code>engine.export_log()</code>) and replay turn-by-turn.</p>
+
+      <textarea id="log-input" placeholder='{"seed":42,"entries":[...]}'></textarea>
+      <div class="replay-controls">
+        <button id="load-log-btn" type="button">Load Log</button>
+        <button id="load-example-btn" type="button">Load bundled example</button>
+        <button id="prev-btn" type="button">◀ Prev</button>
+        <button id="next-btn" type="button">Next ▶</button>
+        <span id="turn-label">Turn: -</span>
+      </div>
+
+      <div class="replay-grid">
+        <section>
+          <h2>Board Snapshot</h2>
+          <ul id="board-list" class="board-list"></ul>
+        </section>
+        <aside>
+          <h2>Market Snapshot</h2>
+          <ul id="market-list" class="market-list"></ul>
+          <h3>Action</h3>
+          <pre id="action-json" class="market-list"></pre>
+        </aside>
+      </div>
+    </main>
+
+    <script src="replay_fork.js"></script>
+  </body>
+</html>
