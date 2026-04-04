@@ -195,6 +195,11 @@ const state = {
   tileBag: [],
   animalBag: [],
   pendingAnimalReturns: [],
+  replay: {
+    enabled: false,
+    entries: [],
+    cursor: 0,
+  },
 };
 
 const turnCounterEl = document.getElementById("turn-counter");
@@ -222,6 +227,15 @@ const setupCardSalmonEl = document.getElementById("setup-card-salmon");
 const setupCardHawkEl = document.getElementById("setup-card-hawk");
 const setupCardFoxEl = document.getElementById("setup-card-fox");
 const startGameBtn = document.getElementById("start-game-btn");
+
+const logInputEl = document.getElementById("log-input");
+const loadLogBtn = document.getElementById("load-log-btn");
+const loadExampleBtn = document.getElementById("load-example-btn");
+const prevBtn = document.getElementById("prev-btn");
+const nextBtn = document.getElementById("next-btn");
+const turnLabelEl = document.getElementById("turn-label");
+const actionJsonEl = document.getElementById("action-json");
+const BUNDLED_EXAMPLE_LOG = "examples/random_agent_seed42_7_log.json";
 
 
 if (TILE_REFERENCE_LIST.length === 0 || STARTER_TILE_SETS.length === 0) {
@@ -711,7 +725,7 @@ function renderMarket() {
     `;
 
     pairEl.addEventListener("click", () => {
-      if (state.gameOver) return;
+      if (state.replay.enabled || state.gameOver) return;
       if (state.phase !== "pickPair") {
         setStatus("Finish placing your current tile/token before picking a new pair.");
         return;
@@ -1496,7 +1510,7 @@ function hoverTokenIsLegal(coordKey) {
 }
 
 function onBoardHexClick(event) {
-  if (state.gameOver) return;
+  if (state.replay.enabled || state.gameOver) return;
   const q = Number(event.currentTarget.dataset.q);
   const r = Number(event.currentTarget.dataset.r);
   const coordKey = key(q, r);
@@ -1604,6 +1618,16 @@ function render() {
   confirmDiscardBtn.disabled = state.phase !== "confirmDiscard";
   resetTurnBtn.disabled = !canResetTurn();
 
+  if (state.replay.enabled) {
+    rerollTripleBtn.disabled = true;
+    rotateLeftBtn.disabled = true;
+    rotateRightBtn.disabled = true;
+    toggleSplitPickBtn.disabled = true;
+    rerollSelectedTokensBtn.disabled = true;
+    confirmDiscardBtn.disabled = true;
+    resetTurnBtn.disabled = true;
+  }
+
   const showRotateControls = !rotateLeftBtn.disabled;
   rotateLeftBtn.classList.toggle("hidden", !showRotateControls);
   rotateRightBtn.classList.toggle("hidden", !showRotateControls);
@@ -1613,6 +1637,183 @@ function render() {
   renderBoard();
   renderEventLog();
   floatingStatusTextEl.textContent = floatingStatusText();
+}
+
+function tileFromReplayBoardEntry(tileEntry) {
+  const terrains = Array.isArray(tileEntry.terrains) ? tileEntry.terrains : [];
+  const printedAnimals = Array.isArray(tileEntry.printed_animals) ? tileEntry.printed_animals : [];
+  const rotation = Number.isInteger(tileEntry.rotation) ? tileEntry.rotation : 0;
+
+  if (tileEntry.kind === "single") {
+    const terrain = terrains[0] ?? "forest";
+    return {
+      kind: "single",
+      terrain,
+      printedAnimals,
+      token: tileEntry.token ?? null,
+      starter: false,
+      rotation,
+      terrainsPresent: [terrain],
+      edges: Array(6).fill(terrain),
+      bonusOnToken: Boolean(tileEntry.bonus_on_token),
+      marketType: null,
+    };
+  }
+
+  const terrainA = terrains[0] ?? "forest";
+  const terrainB = terrains[1] ?? terrainA;
+  const baseEdges = [terrainA, terrainA, terrainA, terrainB, terrainB, terrainB];
+  const edges = Array(6).fill(null);
+  for (let edge = 0; edge < 6; edge += 1) edges[(edge + rotation) % 6] = baseEdges[edge];
+
+  return {
+    kind: "split",
+    terrainA,
+    terrainB,
+    printedAnimals,
+    token: tileEntry.token ?? null,
+    starter: false,
+    rotation,
+    terrainsPresent: [terrainA, terrainB],
+    edges,
+    bonusOnToken: false,
+    marketType: null,
+  };
+}
+
+function pairFromReplayMarketEntry(pairEntry) {
+  const terrains = Array.isArray(pairEntry.terrains) ? pairEntry.terrains : [];
+  const tileDraft = pairEntry.kind === "single"
+    ? {
+      kind: "single",
+      terrain: terrains[0] ?? "forest",
+      printedAnimals: [],
+      bonusOnToken: false,
+      marketType: "single-single",
+      id: pairEntry.tile_id ?? "replay-single",
+    }
+    : {
+      kind: "split",
+      terrainA: terrains[0] ?? "forest",
+      terrainB: terrains[1] ?? terrains[0] ?? "forest",
+      printedAnimals: [],
+      bonusOnToken: false,
+      marketType: null,
+      id: pairEntry.tile_id ?? "replay-split",
+    };
+
+  return {
+    tileDraft,
+    token: pairEntry.token ?? "🐻",
+  };
+}
+
+function updateReplayControls() {
+  if (!turnLabelEl || !prevBtn || !nextBtn) return;
+
+  const hasEntries = state.replay.entries.length > 0;
+  if (!hasEntries) {
+    turnLabelEl.textContent = "Turn: -";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    if (actionJsonEl) actionJsonEl.textContent = "";
+    return;
+  }
+
+  const entry = state.replay.entries[state.replay.cursor];
+  const turn = entry?.state?.turn ?? state.replay.cursor + 1;
+  turnLabelEl.textContent = `Turn: ${turn} (${state.replay.cursor + 1}/${state.replay.entries.length})`;
+  prevBtn.disabled = state.replay.cursor <= 0;
+  nextBtn.disabled = state.replay.cursor >= state.replay.entries.length - 1;
+  if (actionJsonEl) actionJsonEl.textContent = JSON.stringify(entry?.input ?? {}, null, 2);
+}
+
+function applyReplayEntry(index) {
+  if (!state.replay.entries[index]) return;
+
+  const entry = state.replay.entries[index];
+  const snapshot = entry.state ?? {};
+  state.replay.enabled = true;
+  state.replay.cursor = index;
+
+  state.tiles = new Map();
+  (snapshot.board ?? []).forEach((tileEntry) => {
+    const [q, r] = tileEntry.coord ?? [0, 0];
+    state.tiles.set(key(q, r), tileFromReplayBoardEntry(tileEntry));
+  });
+  state.market = (snapshot.market ?? []).map(pairFromReplayMarketEntry);
+
+  state.turn = snapshot.turn ?? entry.turn ?? 1;
+  state.maxTurns = snapshot.max_turns ?? FULL_TURNS;
+  state.natureTokens = snapshot.nature_tokens ?? 0;
+  state.gameOver = Boolean(snapshot.game_over);
+  state.phase = state.gameOver ? "gameOver" : "pickPair";
+  state.selectedPairIndex = null;
+  state.selectedPair = null;
+  state.pendingRotation = 0;
+  state.pendingDiscardReason = null;
+  state.useNatureForMixedPair = false;
+  clearMixedSelection();
+  state.hoverCoordKey = null;
+  state.tileBag = [];
+  state.animalBag = [];
+  state.pendingAnimalReturns = [];
+  state.eventLog = [`[Replay] Loaded log turn ${state.turn}.`];
+  setStatus("Replay mode: board and market reflect the selected logfile turn.");
+
+  render();
+  updateReplayControls();
+}
+
+function loadReplayPayload(payloadText) {
+  const parsed = JSON.parse(payloadText);
+  state.replay.entries = Array.isArray(parsed.entries) ? parsed.entries : [];
+  state.replay.cursor = 0;
+  if (state.replay.entries.length === 0) {
+    state.replay.enabled = false;
+    updateReplayControls();
+    setStatus("Replay log loaded with no entries.");
+    render();
+    return;
+  }
+
+  applyReplayEntry(0);
+}
+
+function setupReplayControls() {
+  if (!loadLogBtn || !loadExampleBtn || !prevBtn || !nextBtn || !logInputEl) return;
+
+  loadLogBtn.addEventListener("click", () => {
+    try {
+      loadReplayPayload(logInputEl.value);
+    } catch (err) {
+      window.alert(`Invalid JSON logfile: ${err.message}`);
+    }
+  });
+
+  loadExampleBtn.addEventListener("click", async () => {
+    try {
+      const response = await fetch(BUNDLED_EXAMPLE_LOG);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payloadText = await response.text();
+      logInputEl.value = payloadText;
+      loadReplayPayload(payloadText);
+    } catch (err) {
+      window.alert(`Failed to load bundled example logfile: ${err.message}`);
+    }
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (state.replay.cursor <= 0) return;
+    applyReplayEntry(state.replay.cursor - 1);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (state.replay.cursor >= state.replay.entries.length - 1) return;
+    applyReplayEntry(state.replay.cursor + 1);
+  });
+
+  updateReplayControls();
 }
 
 function populateSetupSelect(selectEl, options, defaultValue) {
@@ -1700,7 +1901,14 @@ function restartGame() {
   render();
 }
 
-restartBtn.addEventListener("click", restartGame);
+restartBtn.addEventListener("click", () => {
+  if (state.replay.enabled) {
+    setStatus("Replay mode is read-only. Load another turn from the log controls.");
+    render();
+    return;
+  }
+  restartGame();
+});
 resetTurnBtn.addEventListener("click", resetToTurnStart);
 confirmDiscardBtn.addEventListener("click", () => {
   if (state.phase !== "confirmDiscard" || !state.selectedPair) return;
@@ -1787,12 +1995,14 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-startGameBtn.addEventListener("click", () => {
-  applySetupSelections();
-  setupScreenEl.classList.add("hidden");
-  gameScreenEl.classList.remove("hidden");
-  restartGame();
-});
+if (startGameBtn) {
+  startGameBtn.addEventListener("click", () => {
+    applySetupSelections();
+    setupScreenEl.classList.add("hidden");
+    gameScreenEl.classList.remove("hidden");
+    restartGame();
+  });
+}
 
 function updateHoverCoordFromEventTarget(event) {
   if (state.phase !== "placeTile" && state.phase !== "placeToken") {
@@ -1828,3 +2038,4 @@ boardEl.addEventListener("mouseleave", () => {
 });
 
 initializeSetupScreen();
+setupReplayControls();
