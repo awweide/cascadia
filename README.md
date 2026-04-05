@@ -53,6 +53,26 @@ python agents/random_agent.py --data data.js --game-seed 42 --agent-seed 7 --out
 
 This writes a compact turn-choice logfile compatible with `engine.replay_log(...)`.
 
+### Trainable proof-of-concept agent (pure Python, CPU only)
+
+A simplified trainable agent is available in `agents/trainable_agent.py` with these fixed constraints:
+
+- scoring cards are fixed to **Bear A, Elk C, Salmon A, Hawk A, Fox A**
+- game length is fixed to **5 turns**
+- training is pure Python (no third-party libraries, CPU only)
+
+Example:
+
+```bash
+python agents/trainable_agent.py --data data.js --train-steps 12 --episodes-per-step 10 --weights-out trainable_agent_weights.json --log-out trainable_agent_game_log.json
+```
+
+This produces:
+
+- a learned linear-policy weight file (`trainable_agent_weights.json`)
+- a deterministic replay logfile from the trained policy (`trainable_agent_game_log.json`)
+- simple before/after evaluation stats (baseline vs trained mean score across deterministic episodes), embedded in the weights JSON
+
 Bundled example logfile in this repository:
 
 - `examples/random_agent_seed42_7_log.json` (generated with `--game-seed 42 --agent-seed 7`)
@@ -66,6 +86,8 @@ Replay is now integrated directly into `index.html`:
 3. Paste a logfile JSON or click **Load bundled example**.
 4. Click **Start Replay**.
 5. Use **Prev / Next** turn buttons to step through turns.
+
+In replay mode, these **Prev / Next** controls are shown in the floating status bar beside the replay status text.
 
 This supports older snapshot logs and compact version-2 Python engine logs.
 

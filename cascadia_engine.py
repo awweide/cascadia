@@ -114,6 +114,52 @@ class CascadiaEngine:
         self.log: List[dict] = []
         self.starter_set_index: int = 0
 
+    def clone(self) -> "CascadiaEngine":
+        clone = CascadiaEngine(
+            tile_bag=self._tile_bag_source,
+            starter_sets=self._starter_sets,
+            seed=self.seed,
+            max_turns=self.state.max_turns,
+        )
+        clone.state = GameState(
+            turn=self.state.turn,
+            max_turns=self.state.max_turns,
+            nature_tokens=self.state.nature_tokens,
+            game_over=self.state.game_over,
+            board={
+                coord: TilePlacement(
+                    id=tile.id,
+                    kind=tile.kind,
+                    printed_animals=tuple(tile.printed_animals),
+                    terrains=tuple(tile.terrains),
+                    rotation=tile.rotation,
+                    token=tile.token,
+                    bonus_on_token=tile.bonus_on_token,
+                )
+                for coord, tile in self.state.board.items()
+            },
+            market=[
+                MarketPair(
+                    tile=TileDraft(
+                        id=pair.tile.id,
+                        kind=pair.tile.kind,
+                        printed_animals=tuple(pair.tile.printed_animals),
+                        terrains=tuple(pair.tile.terrains),
+                        bonus_on_token=pair.tile.bonus_on_token,
+                    ),
+                    token=pair.token,
+                )
+                for pair in self.state.market
+            ],
+        )
+        clone.animal_bag = list(self.animal_bag)
+        clone.tile_bag = list(self.tile_bag)
+        clone.pending_animal_returns = list(self.pending_animal_returns)
+        clone.log = [dict(entry) for entry in self.log]
+        clone.starter_set_index = self.starter_set_index
+        clone.rng.setstate(self.rng.getstate())
+        return clone
+
     @classmethod
     def from_legacy_data_js(cls, path: str | Path, seed: int = 0, max_turns: int = 20) -> "CascadiaEngine":
         data = _parse_legacy_data_js(path)
@@ -266,14 +312,17 @@ class CascadiaEngine:
         else:
             self.state.turn += 1
 
-    def score(self) -> dict:
+    def score(self, scoring_cards: Optional[Dict[str, str]] = None) -> dict:
+        cards = {"🐻": "A", "🦌": "A", "🐟": "A", "🦅": "A", "🦊": "A"}
+        if scoring_cards:
+            cards.update(scoring_cards)
         terrain_scores = {t: self._largest_terrain_region(t) for t in TERRAINS}
         animal_scores = {
-            "🐻": self._score_bears(),
-            "🦌": self._score_elk(),
-            "🐟": self._score_salmon(),
-            "🦅": self._score_hawks(),
-            "🦊": self._score_foxes(),
+            "🐻": self._score_bears() if cards["🐻"] == "A" else self._score_bears(),
+            "🦌": self._score_elk(card=cards["🦌"]),
+            "🐟": self._score_salmon() if cards["🐟"] == "A" else self._score_salmon(),
+            "🦅": self._score_hawks() if cards["🦅"] == "A" else self._score_hawks(),
+            "🦊": self._score_foxes() if cards["🦊"] == "A" else self._score_foxes(),
         }
         terrain_total = sum(terrain_scores.values())
         animal_total = sum(animal_scores.values())
@@ -456,7 +505,11 @@ class CascadiaEngine:
         table = {1: 4, 2: 11, 3: 19}
         return table.get(pairs, 27 if pairs >= 4 else 0)
 
-    def _score_elk(self) -> int:
+    def _score_elk(self, card: str = "A") -> int:
+        if card == "B":
+            return self._score_elk_b()
+        if card == "C":
+            return self._score_elk_c()
         graph = self._animal_graph("🦌")
         used = set()
         lines = []
@@ -483,6 +536,88 @@ class CascadiaEngine:
             lines.append(len(best_line))
         table = {1: 2, 2: 5, 3: 9}
         return sum(table.get(n, 13) for n in lines)
+
+    def _score_elk_c(self) -> int:
+        graph = self._animal_graph("🦌")
+        table = {1: 2, 2: 4, 3: 7, 4: 10, 5: 14, 6: 18, 7: 23}
+        total = 0
+        for comp in self._components(graph):
+            n = len(comp)
+            total += table.get(n, 28)
+        return total
+
+    def _score_elk_b(self) -> int:
+        graph = self._animal_graph("🦌")
+        nodes = sorted(graph.keys())
+        if not nodes:
+            return 0
+        index_of = {coord: idx for idx, coord in enumerate(nodes)}
+
+        def has_edge(a: Tuple[int, int], b: Tuple[int, int]) -> bool:
+            return b in graph.get(a, [])
+
+        formations: List[Tuple[int, int]] = []  # (bitmask, points)
+        n = len(nodes)
+        for i in range(n):
+            formations.append((1 << i, 2))
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                if has_edge(nodes[i], nodes[j]):
+                    formations.append(((1 << i) | (1 << j), 5))
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                for k in range(j + 1, n):
+                    a, b, c = nodes[i], nodes[j], nodes[k]
+                    if has_edge(a, b) and has_edge(b, c) and has_edge(a, c):
+                        formations.append(((1 << i) | (1 << j) | (1 << k), 9))
+
+        directions = set(AXIAL_DIRECTIONS)
+        for i in range(n):
+            a = nodes[i]
+            neighbors = [nodes[j] for j in range(n) if j != i and has_edge(a, nodes[j])]
+            for b in neighbors:
+                opposite = (a[0] - (b[0] - a[0]), a[1] - (b[1] - a[1]))
+                if opposite not in index_of:
+                    continue
+                for c in neighbors:
+                    if c == b:
+                        continue
+                    delta1 = (b[0] - a[0], b[1] - a[1])
+                    delta2 = (c[0] - a[0], c[1] - a[1])
+                    if (delta1[0] + delta2[0], delta1[1] + delta2[1]) not in directions:
+                        continue
+                    d = (opposite[0] + delta2[0], opposite[1] + delta2[1])
+                    if d not in index_of:
+                        continue
+                    if not has_edge(opposite, d):
+                        continue
+                    idxs = sorted([i, index_of[b], index_of[opposite], index_of[d]])
+                    mask = 0
+                    for idx in idxs:
+                        mask |= (1 << idx)
+                    formations.append((mask, 13))
+
+        formations = list({(mask, pts) for mask, pts in formations})
+        formations.sort(key=lambda item: (item[1], item[0]), reverse=True)
+
+        memo: Dict[int, int] = {}
+
+        def best(used_mask: int) -> int:
+            if used_mask in memo:
+                return memo[used_mask]
+            best_score = 0
+            for mask, points in formations:
+                if used_mask & mask:
+                    continue
+                candidate = points + best(used_mask | mask)
+                if candidate > best_score:
+                    best_score = candidate
+            memo[used_mask] = best_score
+            return best_score
+
+        return best(0)
 
     def _score_foxes(self) -> int:
         score = 0
