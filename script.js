@@ -199,6 +199,8 @@ const state = {
     enabled: false,
     entries: [],
     cursor: 0,
+    scoringCards: null,
+    claimedSummary: null,
   },
 };
 
@@ -1830,9 +1832,11 @@ function normalizeCompactReplayPayload(parsed) {
     const input = compactEntryToInput(entry);
     input.manipulations.forEach((manipulation) => {
       if (manipulation?.kind === "refresh_tokens") {
+        natureTokens = Math.max(0, natureTokens - 1);
         (manipulation.indices ?? []).forEach((idx) => rerollTokenAt(idx));
       }
       if (manipulation?.kind === "reroll_triple") {
+        natureTokens = Math.max(0, natureTokens - 1);
         const matching = [];
         market.forEach((pair, pairIndex) => {
           if (pair.token === manipulation.animal) matching.push(pairIndex);
@@ -1968,6 +1972,18 @@ function applyReplayEntry(index) {
 
 function loadReplayPayload(payloadText) {
   const parsed = JSON.parse(payloadText);
+  const replayScoringCards = parsed?.game_settings?.scoring_cards;
+  state.replay.scoringCards = replayScoringCards && typeof replayScoringCards === "object"
+    ? { ...defaultScoringCards, ...replayScoringCards }
+    : null;
+  state.replay.claimedSummary = parsed?.game_summary && typeof parsed.game_summary === "object"
+    ? { ...parsed.game_summary }
+    : null;
+
+  if (state.replay.scoringCards) {
+    state.gameSetup.scoringCards = { ...state.replay.scoringCards };
+  }
+
   const rawEntries = Array.isArray(parsed.entries) ? parsed.entries : [];
   const hasSnapshotEntries = Boolean(rawEntries[0]?.state);
   state.replay.entries = hasSnapshotEntries ? rawEntries : normalizeCompactReplayPayload(parsed);
