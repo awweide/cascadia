@@ -112,6 +112,7 @@ class CascadiaEngine:
         self.tile_bag: List[TileDraft] = []
         self.pending_animal_returns: List[str] = []
         self.log: List[dict] = []
+        self.starter_set_index: int = 0
 
     @classmethod
     def from_legacy_data_js(cls, path: str | Path, seed: int = 0, max_turns: int = 20) -> "CascadiaEngine":
@@ -136,6 +137,7 @@ class CascadiaEngine:
         self.rng.shuffle(self.animal_bag)
         self.pending_animal_returns = []
         self.log = []
+        self.starter_set_index = starter_set_index
 
         for q, r, draft, rotation in self._starter_sets[starter_set_index]:
             self.state.board[(q, r)] = TilePlacement(
@@ -252,13 +254,10 @@ class CascadiaEngine:
         self._force_quad_refreshes()
 
         log_entry = {
-            "turn": self.state.turn,
-            "input": {
-                "manipulations": list(turn_input.manipulations),
-                "choice": choice.__dict__,
-                "placement": placement.__dict__,
-            },
-            "state": self.encode_state(),
+            "t": self.state.turn,
+            "m": list(turn_input.manipulations),
+            "c": [choice.tile_index, choice.token_index, choice.is_mixed_pair],
+            "p": [placement.q, placement.r, placement.rotation, placement.token_q, placement.token_r],
         }
         self.log.append(log_entry)
 
@@ -288,17 +287,34 @@ class CascadiaEngine:
         }
 
     def export_log(self) -> str:
-        return json.dumps({"seed": self.seed, "entries": self.log}, indent=2)
+        return json.dumps(
+            {
+                "version": 2,
+                "seed": self.seed,
+                "max_turns": self.state.max_turns,
+                "starter_set": self.starter_set_index,
+                "entries": self.log,
+            },
+            indent=2,
+        )
 
     def replay_log(self, log_text: str) -> None:
         payload = json.loads(log_text)
-        self.__init__(tile_bag=self._tile_bag_source, starter_sets=self._starter_sets, seed=payload["seed"], max_turns=self.state.max_turns)
-        self.reset()
+        max_turns = int(payload.get("max_turns", self.state.max_turns))
+        starter_set = int(payload.get("starter_set", 0))
+        self.__init__(tile_bag=self._tile_bag_source, starter_sets=self._starter_sets, seed=payload["seed"], max_turns=max_turns)
+        self.reset(starter_set_index=starter_set)
         for entry in payload["entries"]:
-            choice = MarketChoice(**entry["input"]["choice"])
-            placement = PlacementInput(**entry["input"]["placement"])
+            if "input" in entry:
+                manipulations = tuple(entry["input"]["manipulations"])
+                choice = MarketChoice(**entry["input"]["choice"])
+                placement = PlacementInput(**entry["input"]["placement"])
+            else:
+                choice = MarketChoice(tile_index=entry["c"][0], token_index=entry["c"][1], is_mixed_pair=entry["c"][2])
+                placement = PlacementInput(q=entry["p"][0], r=entry["p"][1], rotation=entry["p"][2], token_q=entry["p"][3], token_r=entry["p"][4])
+                manipulations = tuple(entry.get("m", []))
             turn_input = TurnInput(
-                manipulations=tuple(entry["input"]["manipulations"]),
+                manipulations=manipulations,
                 choice=choice,
                 placement=placement,
             )

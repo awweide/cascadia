@@ -22,7 +22,7 @@ A deterministic Python engine is available in `cascadia_engine.py` with a compac
 - full game state encoding (`encode_state()` and `encode_state_text()`)
 - move validation through `apply_turn(...)`
 - end scoring with `score()`
-- full-text JSON game logging with `export_log()`
+- compact JSON action logging with `export_log()` (turn choices only)
 - log replay compatibility (`replay_log(...)`) so a game can be played back from an action logfile
 
 Quick example:
@@ -51,7 +51,7 @@ Run a full game with a deterministic random agent and produce a replay logfile:
 python agents/random_agent.py --data data.js --game-seed 42 --agent-seed 7 --out random_agent_game_log.json
 ```
 
-This writes a full-turn JSON logfile compatible with `engine.replay_log(...)` and with the browser replay fork below.
+This writes a compact turn-choice logfile compatible with `engine.replay_log(...)`.
 
 Bundled example logfile in this repository:
 
