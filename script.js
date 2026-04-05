@@ -226,6 +226,9 @@ const setupCardElkEl = document.getElementById("setup-card-elk");
 const setupCardSalmonEl = document.getElementById("setup-card-salmon");
 const setupCardHawkEl = document.getElementById("setup-card-hawk");
 const setupCardFoxEl = document.getElementById("setup-card-fox");
+const setupModeEl = document.getElementById("setup-mode");
+const replaySetupOptionsEl = document.getElementById("replay-setup-options");
+const replayControlsEl = document.getElementById("replay-controls");
 const startGameBtn = document.getElementById("start-game-btn");
 
 const logInputEl = document.getElementById("log-input");
@@ -1632,11 +1635,13 @@ function render() {
   rotateLeftBtn.classList.toggle("hidden", !showRotateControls);
   rotateRightBtn.classList.toggle("hidden", !showRotateControls);
   confirmDiscardBtn.classList.toggle("hidden", state.phase !== "confirmDiscard");
+  if (replayControlsEl) replayControlsEl.classList.toggle("hidden", !state.replay.enabled);
 
   renderMarket();
   renderBoard();
   renderEventLog();
   floatingStatusTextEl.textContent = floatingStatusText();
+  updateReplayControls();
 }
 
 function tileFromReplayBoardEntry(tileEntry) {
@@ -1708,6 +1713,202 @@ function pairFromReplayMarketEntry(pairEntry) {
   };
 }
 
+function createSeededRng(seed) {
+  let a = Number(seed) || 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleInPlaceWithRng(list, rng) {
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [list[index], list[swapIndex]] = [list[swapIndex], list[index]];
+  }
+}
+
+function compactEntryToInput(entry) {
+  if (entry?.input) return entry.input;
+  return {
+    manipulations: entry?.m ?? [],
+    choice: {
+      tile_index: entry?.c?.[0] ?? 0,
+      token_index: entry?.c?.[1] ?? 0,
+      is_mixed_pair: Boolean(entry?.c?.[2]),
+    },
+    placement: {
+      q: entry?.p?.[0] ?? 0,
+      r: entry?.p?.[1] ?? 0,
+      rotation: entry?.p?.[2] ?? 0,
+      token_q: entry?.p?.[3],
+      token_r: entry?.p?.[4],
+    },
+  };
+}
+
+function normalizeCompactReplayPayload(parsed) {
+  const rng = createSeededRng(parsed.seed ?? 0);
+  const replayTiles = new Map();
+  const starterSetIndex = Number.isInteger(parsed.starter_set) ? parsed.starter_set : 0;
+  const starterSet = STARTER_TILE_SETS[starterSetIndex] ?? STARTER_TILE_SETS[0] ?? [];
+
+  starterSet.forEach((starter) => {
+    const tile = tileFromDraft(starter.tile, starter.rotation);
+    tile.starter = true;
+    tile.token = starter.token;
+    replayTiles.set(key(starter.q, starter.r), tile);
+  });
+
+  const tileBag = TILE_REFERENCE_LIST.map((tile) => ({ ...tile, printedAnimals: [...tile.printedAnimals] }));
+  shuffleInPlaceWithRng(tileBag, rng);
+  const animalBag = animals.flatMap((animal) => Array(20).fill(animal));
+  shuffleInPlaceWithRng(animalBag, rng);
+
+  const pendingAnimalReturns = [];
+  const market = [];
+
+  const drawPairWithReplayRng = () => {
+    if (tileBag.length === 0 || animalBag.length === 0) return null;
+    return {
+      tileDraft: tileBag.pop(),
+      token: animalBag.pop(),
+    };
+  };
+  while (market.length < 4) {
+    const pair = drawPairWithReplayRng();
+    if (!pair) break;
+    market.push(pair);
+  }
+
+  const rerollTokenAt = (index) => {
+    if (!market[index] || animalBag.length === 0) return;
+    pendingAnimalReturns.push(market[index].token);
+    market[index].token = animalBag.pop();
+  };
+  const returnPendingAnimals = () => {
+    if (pendingAnimalReturns.length === 0) return;
+    pendingAnimalReturns.forEach((animal) => animalBag.push(animal));
+    pendingAnimalReturns.length = 0;
+    shuffleInPlaceWithRng(animalBag, rng);
+  };
+  const removeMarketChoice = (choice) => {
+    const indexes = [...new Set([choice.tile_index, choice.token_index])].sort((a, b) => b - a);
+    indexes.forEach((index) => {
+      const removed = market.splice(index, 1)[0];
+      if (index !== choice.token_index && removed) pendingAnimalReturns.push(removed.token);
+    });
+    if (market.length > 0) {
+      const leftmost = market.splice(0, 1)[0];
+      if (leftmost) pendingAnimalReturns.push(leftmost.token);
+    }
+  };
+  const refillMarket = () => {
+    while (market.length < 4) {
+      const pair = drawPairWithReplayRng();
+      if (!pair) break;
+      market.push(pair);
+    }
+  };
+  const forceQuadRefreshes = () => {
+    while (market.length === 4 && new Set(market.map((pair) => pair.token)).size === 1) {
+      [0, 1, 2, 3].forEach((index) => rerollTokenAt(index));
+      returnPendingAnimals();
+    }
+  };
+
+  const normalizedEntries = [];
+  const maxTurns = parsed.max_turns ?? FULL_TURNS;
+  let turn = 1;
+  let natureTokens = 0;
+  let gameOver = false;
+
+  (parsed.entries ?? []).forEach((entry, index) => {
+    const input = compactEntryToInput(entry);
+    input.manipulations.forEach((manipulation) => {
+      if (manipulation?.kind === "refresh_tokens") {
+        (manipulation.indices ?? []).forEach((idx) => rerollTokenAt(idx));
+      }
+      if (manipulation?.kind === "reroll_triple") {
+        const matching = [];
+        market.forEach((pair, pairIndex) => {
+          if (pair.token === manipulation.animal) matching.push(pairIndex);
+        });
+        matching.forEach((idx) => rerollTokenAt(idx));
+      }
+    });
+
+    const chosenPair = market[input.choice.tile_index];
+    const tileDraft = chosenPair?.tileDraft ?? market[0]?.tileDraft;
+    if (tileDraft) {
+      replayTiles.set(
+        key(input.placement.q, input.placement.r),
+        tileFromDraft(tileDraft, input.placement.rotation ?? 0)
+      );
+    }
+
+    const tokenQ = input.placement.token_q;
+    const tokenR = input.placement.token_r;
+    const hasTokenPlacement = Number.isInteger(tokenQ) && Number.isInteger(tokenR) && tokenQ >= 0 && tokenR >= 0;
+    if (hasTokenPlacement) {
+      const placedToken = market[input.choice.token_index]?.token ?? "🐻";
+      const targetKey = key(tokenQ, tokenR);
+      const targetTile = replayTiles.get(targetKey);
+      if (targetTile) {
+        targetTile.token = placedToken;
+        if (targetTile.bonusOnToken) {
+          targetTile.bonusOnToken = false;
+          natureTokens += 1;
+        }
+      }
+    }
+
+    removeMarketChoice(input.choice);
+    returnPendingAnimals();
+    refillMarket();
+    forceQuadRefreshes();
+
+    gameOver = turn >= maxTurns;
+    normalizedEntries.push({
+      input,
+      state: {
+        turn,
+        max_turns: maxTurns,
+        nature_tokens: natureTokens,
+        game_over: gameOver,
+        board: Array.from(replayTiles.entries()).map(([coordKey, tile]) => {
+          const coord = parseKey(coordKey);
+          return {
+            coord: [coord.q, coord.r],
+            id: tile.id ?? `replay-${index}`,
+            kind: tile.kind,
+            terrains: tile.kind === "single" ? [tile.terrain] : [tile.terrainA, tile.terrainB],
+            rotation: tile.rotation ?? 0,
+            printed_animals: tile.printedAnimals ?? [],
+            token: tile.token ?? null,
+            bonus_on_token: Boolean(tile.bonusOnToken),
+          };
+        }),
+        market: market.map((pair) => ({
+          tile_id: pair.tileDraft.id,
+          token: pair.token,
+          terrains: pair.tileDraft.kind === "single"
+            ? [pair.tileDraft.terrain]
+            : [pair.tileDraft.terrainA, pair.tileDraft.terrainB],
+          kind: pair.tileDraft.kind,
+        })),
+      },
+    });
+
+    if (!gameOver) turn += 1;
+  });
+
+  return normalizedEntries;
+}
+
 function updateReplayControls() {
   if (!turnLabelEl || !prevBtn || !nextBtn) return;
 
@@ -1767,7 +1968,9 @@ function applyReplayEntry(index) {
 
 function loadReplayPayload(payloadText) {
   const parsed = JSON.parse(payloadText);
-  state.replay.entries = Array.isArray(parsed.entries) ? parsed.entries : [];
+  const rawEntries = Array.isArray(parsed.entries) ? parsed.entries : [];
+  const hasSnapshotEntries = Boolean(rawEntries[0]?.state);
+  state.replay.entries = hasSnapshotEntries ? rawEntries : normalizeCompactReplayPayload(parsed);
   state.replay.cursor = 0;
   if (state.replay.entries.length === 0) {
     state.replay.enabled = false;
@@ -1786,6 +1989,8 @@ function setupReplayControls() {
   loadLogBtn.addEventListener("click", () => {
     try {
       loadReplayPayload(logInputEl.value);
+      setStatus("Replay log loaded. Click Start Game to open replay mode.");
+      render();
     } catch (err) {
       window.alert(`Invalid JSON logfile: ${err.message}`);
     }
@@ -1798,6 +2003,8 @@ function setupReplayControls() {
       const payloadText = await response.text();
       logInputEl.value = payloadText;
       loadReplayPayload(payloadText);
+      setStatus("Bundled replay loaded. Click Start Game to open replay mode.");
+      render();
     } catch (err) {
       window.alert(`Failed to load bundled example logfile: ${err.message}`);
     }
@@ -1851,6 +2058,16 @@ function initializeSetupScreen() {
   populateSetupSelect(setupCardSalmonEl, cardOptions, "random");
   populateSetupSelect(setupCardHawkEl, cardOptions, "random");
   populateSetupSelect(setupCardFoxEl, cardOptions, "random");
+
+  if (setupModeEl && replaySetupOptionsEl && startGameBtn) {
+    const updateModeUi = () => {
+      const replayMode = setupModeEl.value === "replay";
+      replaySetupOptionsEl.classList.toggle("hidden", !replayMode);
+      startGameBtn.textContent = replayMode ? "Start Replay" : "Start Game";
+    };
+    setupModeEl.addEventListener("change", updateModeUi);
+    updateModeUi();
+  }
 }
 
 function applySetupSelections() {
@@ -1997,10 +2214,26 @@ document.addEventListener("keydown", (event) => {
 
 if (startGameBtn) {
   startGameBtn.addEventListener("click", () => {
-    applySetupSelections();
+    const replayMode = setupModeEl?.value === "replay";
+    if (replayMode) {
+      if (state.replay.entries.length === 0) {
+        window.alert("Load a replay logfile first.");
+        return;
+      }
+    } else {
+      state.replay.enabled = false;
+      state.replay.entries = [];
+      state.replay.cursor = 0;
+      applySetupSelections();
+    }
+
     setupScreenEl.classList.add("hidden");
     gameScreenEl.classList.remove("hidden");
-    restartGame();
+    if (replayMode) {
+      applyReplayEntry(0);
+    } else {
+      restartGame();
+    }
   });
 }
 

@@ -57,22 +57,17 @@ Bundled example logfile in this repository:
 
 - `examples/random_agent_seed42_7_log.json` (generated with `--game-seed 42 --agent-seed 7`)
 
-### JavaScript replay fork for Python logs
+### Replay playback in the main UI
 
-`replay.html` + `replay_fork.js` provide a lightweight browser fork that can load the Python logfile JSON and play through turns (prev/next) using stored board + market snapshots and turn inputs.
+Replay is now integrated directly into `index.html`:
 
-Run locally:
+1. Open `index.html`.
+2. In **Game Setup**, set **Mode** to **Replay Logfile**.
+3. Paste a logfile JSON or click **Load bundled example**.
+4. Click **Start Replay**.
+5. Use **Prev / Next** turn buttons to step through turns.
 
-```bash
-python3 -m http.server 8000
-```
-
-Then open:
-
-- `http://localhost:8000/index.html` (main game)
-- `http://localhost:8000/replay.html` (log replay fork)
-
-In the replay fork page, click **Load bundled example** to load and step through `examples/random_agent_seed42_7_log.json`.
+This supports older snapshot logs and compact version-2 Python engine logs.
 
 ## Modes
 

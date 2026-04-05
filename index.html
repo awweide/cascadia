@@ -10,6 +10,14 @@
     <main class="app">
       <section id="setup-screen" class="setup-screen">
         <h2>Game Setup</h2>
+        <div class="setup-mode-row">
+          <label>Mode
+            <select id="setup-mode">
+              <option value="play" selected>Play Game</option>
+              <option value="replay">Replay Logfile</option>
+            </select>
+          </label>
+        </div>
         <div class="setup-grid">
           <label>Starting tile
             <select id="setup-starting-tile"></select>
@@ -30,6 +38,15 @@
             <select id="setup-card-fox"></select>
           </label>
         </div>
+        <section id="replay-setup-options" class="replay-setup hidden">
+          <h3>Replay Log</h3>
+          <p>Paste a logfile JSON (v1 snapshot logs and compact v2 logs are supported).</p>
+          <textarea id="log-input" placeholder='{"seed":42,"entries":[...]}'></textarea>
+          <div class="replay-setup-controls">
+            <button id="load-log-btn" type="button">Load Pasted Log</button>
+            <button id="load-example-btn" type="button">Load bundled example</button>
+          </div>
+        </section>
         <button id="start-game-btn" type="button">Start Game</button>
       </section>
 
@@ -48,6 +65,11 @@
               <p>Turn: <span id="turn-counter">1 / 20</span></p>
               <p>★ Stars: <span id="star-counter">0</span></p>
               <p>Current score: <span id="score-formula">0 + 0 + 0 = 0</span></p>
+            </div>
+            <div id="replay-controls" class="replay-controls hidden">
+              <button id="prev-btn" type="button">◀ Prev</button>
+              <button id="next-btn" type="button">Next ▶</button>
+              <span id="turn-label">Turn: -</span>
             </div>
             <div id="score-breakdown" class="score-breakdown"></div>
           </section>
