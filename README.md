@@ -72,6 +72,7 @@ This produces:
 - a learned linear-policy weight file (`trainable_agent_weights.json`)
 - a deterministic replay logfile from the trained policy (`trainable_agent_game_log.json`)
 - simple before/after evaluation stats (baseline vs trained mean score across deterministic episodes), embedded in the weights JSON
+- logfile metadata that captures game setup (`game_settings`, including scoring cards + starter tiles) and end-of-game score summary (`game_summary`, including terrain/animal subtotals)
 
 Bundled example logfile in this repository:
 

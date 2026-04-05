@@ -27,8 +27,11 @@ class TrainableAgentTests(unittest.TestCase):
         )
         self.assertTrue(engine.state.game_over)
         self.assertEqual(engine.state.max_turns, 5)
-        payload = json.loads(engine.export_log())
+        payload = json.loads(engine.export_log(scoring_cards=FIXED_SCORING_CARDS))
         self.assertEqual(len(payload["entries"]), 5)
+        self.assertEqual(payload["game_settings"]["scoring_cards"], FIXED_SCORING_CARDS)
+        self.assertIn("terrain_scores", payload["game_summary"])
+        self.assertIn("animal_scores", payload["game_summary"])
         self.assertGreaterEqual(score, 0)
         custom_score = engine.score(scoring_cards=FIXED_SCORING_CARDS)["total"]
         self.assertEqual(int(score), custom_score)

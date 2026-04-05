@@ -68,6 +68,12 @@ class EngineTests(unittest.TestCase):
         entry = payload["entries"][0]
         self.assertEqual(set(entry.keys()), {"t", "m", "c", "p"})
         self.assertNotIn("state", entry)
+        self.assertIn("game_settings", payload)
+        self.assertIn("game_summary", payload)
+        self.assertIn("scoring_cards", payload["game_settings"])
+        self.assertIn("starter_tiles", payload["game_settings"])
+        self.assertIn("terrain_scores", payload["game_summary"])
+        self.assertIn("animal_scores", payload["game_summary"])
 
 
 if __name__ == "__main__":
