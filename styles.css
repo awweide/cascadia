@@ -47,6 +47,51 @@ h1, h2 { margin: 0.4rem 0; }
   padding: 0.4rem;
 }
 
+.setup-mode-row {
+  margin-bottom: 0.8rem;
+}
+
+.setup-mode-row label {
+  display: grid;
+  gap: 0.2rem;
+  font-weight: 600;
+  max-width: 280px;
+}
+
+.setup-mode-row select {
+  padding: 0.4rem;
+}
+
+.replay-setup {
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.replay-setup h3 {
+  margin: 0 0 0.2rem;
+}
+
+.replay-setup p {
+  margin: 0 0 0.4rem;
+  font-size: 0.92rem;
+}
+
+#log-input {
+  width: 100%;
+  min-height: 130px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-bottom: 0.5rem;
+}
+
+.replay-setup-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -78,6 +123,12 @@ h1, h2 { margin: 0.4rem 0; }
 .top-panel { display: grid; grid-template-columns: minmax(260px, 320px) 1fr; gap: 1rem; align-items: flex-start; }
 .status-summary p { margin: 0.2rem 0; }
 .status-score-line { font-weight: 600; }
+.replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
 
 .market-sidebar {
   position: sticky;
