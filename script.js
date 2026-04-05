@@ -1856,7 +1856,7 @@ function normalizeCompactReplayPayload(parsed) {
 
     const tokenQ = input.placement.token_q;
     const tokenR = input.placement.token_r;
-    const hasTokenPlacement = Number.isInteger(tokenQ) && Number.isInteger(tokenR) && tokenQ >= 0 && tokenR >= 0;
+    const hasTokenPlacement = Number.isInteger(tokenQ) && Number.isInteger(tokenR);
     if (hasTokenPlacement) {
       const placedToken = market[input.choice.token_index]?.token ?? "🐻";
       const targetKey = key(tokenQ, tokenR);
