@@ -400,6 +400,18 @@ button:disabled {
   text-align: center;
 }
 
+.floating-status-center {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
+.floating-status-center .replay-controls {
+  justify-content: center;
+}
+
 .status-actions {
   display: flex;
   gap: 0.45rem;
@@ -495,5 +507,5 @@ button:disabled {
     flex-direction: column;
   }
 
-  .floating-status-text { order: -1; }
+  .floating-status-center { order: -1; }
 }

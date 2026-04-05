@@ -66,11 +66,6 @@
               <p>★ Stars: <span id="star-counter">0</span></p>
               <p>Current score: <span id="score-formula">0 + 0 + 0 = 0</span></p>
             </div>
-            <div id="replay-controls" class="replay-controls hidden">
-              <button id="prev-btn" type="button">◀ Prev</button>
-              <button id="next-btn" type="button">Next ▶</button>
-              <span id="turn-label">Turn: -</span>
-            </div>
             <div id="score-breakdown" class="score-breakdown"></div>
           </section>
 
@@ -102,7 +97,14 @@
       <div class="status-actions status-left">
         <button id="reset-turn-btn" type="button">Reset Turn</button>
       </div>
-      <div id="floating-status-text" class="floating-status-text"></div>
+      <div class="floating-status-center">
+        <div id="floating-status-text" class="floating-status-text"></div>
+        <div id="replay-controls" class="replay-controls hidden">
+          <button id="prev-btn" type="button">◀ Prev</button>
+          <button id="next-btn" type="button">Next ▶</button>
+          <span id="turn-label">Turn: -</span>
+        </div>
+      </div>
       <div class="status-actions status-right">
         <button id="rotate-left-btn" type="button">Rotate ⟲ (Z)</button>
         <button id="rotate-right-btn" type="button">Rotate ⟳ (X)</button>
