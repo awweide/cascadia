@@ -335,13 +335,50 @@ class CascadiaEngine:
             "total": terrain_total + animal_total + self.state.nature_tokens,
         }
 
-    def export_log(self) -> str:
+    def _starter_setup_payload(self) -> dict:
+        starter_tiles = []
+        for q, r, draft, rotation in self._starter_sets[self.starter_set_index]:
+            starter_tiles.append(
+                {
+                    "coord": [q, r],
+                    "id": draft.id,
+                    "kind": draft.kind,
+                    "terrains": list(draft.terrains),
+                    "rotation": rotation,
+                    "printed_animals": list(draft.printed_animals),
+                    "bonus_on_token": draft.bonus_on_token,
+                }
+            )
+        return {
+            "starter_set_index": self.starter_set_index,
+            "starter_tiles": starter_tiles,
+        }
+
+    def export_log(self, scoring_cards: Optional[Dict[str, str]] = None) -> str:
+        cards = {"🐻": "A", "🦌": "A", "🐟": "A", "🦅": "A", "🦊": "A"}
+        if scoring_cards:
+            cards.update(scoring_cards)
+        score_summary = self.score(scoring_cards=cards)
         return json.dumps(
             {
                 "version": 2,
                 "seed": self.seed,
                 "max_turns": self.state.max_turns,
                 "starter_set": self.starter_set_index,
+                "game_settings": {
+                    "seed": self.seed,
+                    "max_turns": self.state.max_turns,
+                    "scoring_cards": cards,
+                    **self._starter_setup_payload(),
+                },
+                "game_summary": {
+                    "total": score_summary["total"],
+                    "nature_token_points": score_summary["nature_token_points"],
+                    "terrain_total": score_summary["terrain_total"],
+                    "animal_total": score_summary["animal_total"],
+                    "terrain_scores": score_summary["terrain_scores"],
+                    "animal_scores": score_summary["animal_scores"],
+                },
                 "entries": self.log,
             },
             indent=2,

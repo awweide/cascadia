@@ -255,7 +255,7 @@ def main() -> None:
         ),
         encoding="utf-8",
     )
-    Path(args.log_out).write_text(engine.export_log(), encoding="utf-8")
+    Path(args.log_out).write_text(engine.export_log(scoring_cards=FIXED_SCORING_CARDS), encoding="utf-8")
 
     print(f"Saved weights: {args.weights_out}")
     print(f"Saved replay log: {args.log_out}")
