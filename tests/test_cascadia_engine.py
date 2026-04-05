@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from cascadia_engine import CascadiaEngine, MarketChoice, PlacementInput, TurnInput
 
@@ -46,6 +47,27 @@ class EngineTests(unittest.TestCase):
         replay = CascadiaEngine.from_legacy_data_js("data.js", seed=999)
         replay.replay_log(engine.export_log())
         self.assertEqual(after_one, replay.encode_state())
+
+    def test_export_log_is_compact_action_only(self):
+        engine = CascadiaEngine.from_legacy_data_js("data.js", seed=4)
+        engine.reset()
+        chosen_token = engine.state.market[0].token
+        legal = set(engine.legal_token_coords(chosen_token))
+        if chosen_token in engine.state.market[0].tile.printed_animals:
+            legal.add((2, -1))
+        token_q = token_r = None
+        if legal:
+            token_q, token_r = sorted(legal)[0]
+        turn = TurnInput(
+            manipulations=tuple(),
+            choice=MarketChoice(tile_index=0, token_index=0, is_mixed_pair=False),
+            placement=PlacementInput(q=2, r=-1, rotation=0, token_q=token_q, token_r=token_r),
+        )
+        engine.apply_turn(turn)
+        payload = json.loads(engine.export_log())
+        entry = payload["entries"][0]
+        self.assertEqual(set(entry.keys()), {"t", "m", "c", "p"})
+        self.assertNotIn("state", entry)
 
 
 if __name__ == "__main__":
