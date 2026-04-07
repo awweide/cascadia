@@ -1716,13 +1716,95 @@ function pairFromReplayMarketEntry(pairEntry) {
 }
 
 function createSeededRng(seed) {
-  let a = Number(seed) || 0;
+  const N = 624;
+  const M = 397;
+  const MATRIX_A = 0x9908b0df;
+  const UPPER_MASK = 0x80000000;
+  const LOWER_MASK = 0x7fffffff;
+  const state = new Array(N).fill(0);
+  let index = N + 1;
+
+  const toUint32 = (value) => (value >>> 0);
+
+  const initGenrand = (seedValue) => {
+    state[0] = toUint32(seedValue);
+    for (index = 1; index < N; index += 1) {
+      const prev = state[index - 1] ^ (state[index - 1] >>> 30);
+      state[index] = toUint32(Math.imul(1812433253, prev) + index);
+    }
+  };
+
+  const bigintAbs = (value) => (value < 0n ? -value : value);
+  const seedToKey = (seedValue) => {
+    let n = bigintAbs(BigInt(seedValue ?? 0));
+    const key = [];
+    while (n > 0n) {
+      key.push(Number(n & 0xffffffffn));
+      n >>= 32n;
+    }
+    if (key.length === 0) key.push(0);
+    return key;
+  };
+
+  const initByArray = (seedKey) => {
+    initGenrand(19650218);
+    let i = 1;
+    let j = 0;
+    for (let k = Math.max(N, seedKey.length); k > 0; k -= 1) {
+      const prev = state[i - 1] ^ (state[i - 1] >>> 30);
+      state[i] = toUint32((state[i] ^ Math.imul(prev, 1664525)) + seedKey[j] + j);
+      i += 1;
+      j += 1;
+      if (i >= N) {
+        state[0] = state[N - 1];
+        i = 1;
+      }
+      if (j >= seedKey.length) j = 0;
+    }
+    for (let k = N - 1; k > 0; k -= 1) {
+      const prev = state[i - 1] ^ (state[i - 1] >>> 30);
+      state[i] = toUint32((state[i] ^ Math.imul(prev, 1566083941)) - i);
+      i += 1;
+      if (i >= N) {
+        state[0] = state[N - 1];
+        i = 1;
+      }
+    }
+    state[0] = 0x80000000;
+  };
+
+  const genInt32 = () => {
+    let y;
+    if (index >= N) {
+      const mag01 = [0x0, MATRIX_A];
+      let kk = 0;
+      for (; kk < N - M; kk += 1) {
+        y = (state[kk] & UPPER_MASK) | (state[kk + 1] & LOWER_MASK);
+        state[kk] = state[kk + M] ^ (y >>> 1) ^ mag01[y & 0x1];
+      }
+      for (; kk < N - 1; kk += 1) {
+        y = (state[kk] & UPPER_MASK) | (state[kk + 1] & LOWER_MASK);
+        state[kk] = state[kk + (M - N)] ^ (y >>> 1) ^ mag01[y & 0x1];
+      }
+      y = (state[N - 1] & UPPER_MASK) | (state[0] & LOWER_MASK);
+      state[N - 1] = state[M - 1] ^ (y >>> 1) ^ mag01[y & 0x1];
+      index = 0;
+    }
+    y = state[index];
+    index += 1;
+    y ^= y >>> 11;
+    y ^= (y << 7) & 0x9d2c5680;
+    y ^= (y << 15) & 0xefc60000;
+    y ^= y >>> 18;
+    return toUint32(y);
+  };
+
+  initByArray(seedToKey(Number(seed) || 0));
+
   return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    const a = genInt32() >>> 5;
+    const b = genInt32() >>> 6;
+    return ((a * 67108864) + b) / 9007199254740992;
   };
 }
 

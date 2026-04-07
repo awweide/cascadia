@@ -299,15 +299,22 @@ class CascadiaEngine:
         self._refill_market()
         self._force_quad_refreshes()
 
+        completed_turn = self.state.turn
+        game_over_after_turn = completed_turn >= self.state.max_turns
+        snapshot = self.encode_state()
+        snapshot["turn"] = completed_turn
+        snapshot["game_over"] = game_over_after_turn
+
         log_entry = {
-            "t": self.state.turn,
+            "t": completed_turn,
             "m": list(turn_input.manipulations),
             "c": [choice.tile_index, choice.token_index, choice.is_mixed_pair],
             "p": [placement.q, placement.r, placement.rotation, placement.token_q, placement.token_r],
+            "state": snapshot,
         }
         self.log.append(log_entry)
 
-        if self.state.turn >= self.state.max_turns:
+        if game_over_after_turn:
             self.state.game_over = True
         else:
             self.state.turn += 1
