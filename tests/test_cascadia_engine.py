@@ -48,7 +48,7 @@ class EngineTests(unittest.TestCase):
         replay.replay_log(engine.export_log())
         self.assertEqual(after_one, replay.encode_state())
 
-    def test_export_log_is_compact_action_only(self):
+    def test_export_log_includes_action_and_state_snapshot(self):
         engine = CascadiaEngine.from_legacy_data_js("data.js", seed=4)
         engine.reset()
         chosen_token = engine.state.market[0].token
@@ -66,8 +66,10 @@ class EngineTests(unittest.TestCase):
         engine.apply_turn(turn)
         payload = json.loads(engine.export_log())
         entry = payload["entries"][0]
-        self.assertEqual(set(entry.keys()), {"t", "m", "c", "p"})
-        self.assertNotIn("state", entry)
+        self.assertEqual(set(entry.keys()), {"t", "m", "c", "p", "state"})
+        self.assertIn("state", entry)
+        self.assertIn("market", entry["state"])
+        self.assertIn("board", entry["state"])
         self.assertIn("game_settings", payload)
         self.assertIn("game_summary", payload)
         self.assertIn("scoring_cards", payload["game_settings"])

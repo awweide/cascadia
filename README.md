@@ -19,10 +19,11 @@ Then visit <http://localhost:8000>.
 A deterministic Python engine is available in `cascadia_engine.py` with a compact agent-friendly API:
 
 - deterministic random seeds
+- JS replay normalization uses the same seeded RNG behavior as the Python engine for compact action logs
 - full game state encoding (`encode_state()` and `encode_state_text()`)
 - move validation through `apply_turn(...)`
 - end scoring with `score()`
-- compact JSON action logging with `export_log()` (turn choices only)
+- JSON action logging with `export_log()` (turn choices plus authoritative per-turn state snapshots for replay fidelity)
 - log replay compatibility (`replay_log(...)`) so a game can be played back from an action logfile
 
 Quick example:
